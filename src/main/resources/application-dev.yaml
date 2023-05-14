@@ -1,0 +1,10 @@
+grpc:
+  service:
+    graph:
+      host: localhost
+      port: 6565
+    profile:
+      host: localhost
+      port: 6567
+server:
+  port: 8083
