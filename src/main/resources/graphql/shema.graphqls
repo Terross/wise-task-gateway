@@ -1,0 +1,21 @@
+type Query {
+    #profile
+    getAllProfiles: [Profile]!
+
+    #graph
+    getGraphById(id: ID!): Graph!
+
+    #plugin
+}
+
+type Mutation {
+    #profile
+    signUp(signUpRequest: SignUpRequest!): Token!
+    signIn(signInRequest: SignInRequest!): Token!
+
+    #graph
+    createGraph(graph: CreateGraphRequest!): Graph!
+    generateGraph(generateGraphRequest: GenerateGraphRequest!): Graph!
+
+    #plugin
+}

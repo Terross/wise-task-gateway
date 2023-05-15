@@ -1,3 +1,28 @@
+input SignInRequest {
+    email: String!
+    password: String!
+}
+
+input SignUpRequest {
+    profile: ProfileInput!
+}
+
+input ProfileInput {
+    id : ID!
+    email: String!
+    profilePassword: String!
+    firstName: String!
+    lastName: String!
+    patronymic: String
+    profileRole: Role!
+    studentGroup: String
+    studentCourse: Int
+}
+
+type Token {
+    token: String!
+}
+
 type Profile {
     id : ID!
     email: String!
@@ -15,8 +40,4 @@ enum Role {
     TEACHER
     CAPTAIN
     ADMIN
-}
-
-type Query {
-    profiles: [Profile]!
 }

@@ -3,6 +3,7 @@ package ru.leti.wise.task.gateway.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValueCheckStrategy;
 import ru.leti.graphql.model.Profile;
+import ru.leti.graphql.model.ProfileInput;
 import ru.leti.graphql.model.Role;
 import ru.leti.wise.task.profile.ProfileOuterClass;
 
@@ -12,7 +13,7 @@ import java.util.List;
 public interface ProfileMapper {
 
 
-    ProfileOuterClass.Profile toProfile(Profile profile);
+    ProfileOuterClass.Profile toProfile(ProfileInput profile);
     Profile toProfileEntity(ProfileOuterClass.Profile profile);
 
     List<Profile> toProfiles(List<ProfileOuterClass.Profile> profiles);

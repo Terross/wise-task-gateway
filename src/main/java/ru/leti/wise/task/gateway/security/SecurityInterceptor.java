@@ -13,7 +13,6 @@ public class SecurityInterceptor implements WebGraphQlInterceptor {
 
     @Override
     public Mono<WebGraphQlResponse> intercept(WebGraphQlRequest request, Chain chain) {
-        System.out.println(123);
         return chain.next(request);
     }
 }
