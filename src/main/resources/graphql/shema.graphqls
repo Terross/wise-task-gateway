@@ -6,6 +6,8 @@ type Query {
     getGraphById(id: ID!): Graph!
 
     #plugin
+    getAllPlugins: [Plugin]!
+    getPlugin(id: ID!): Plugin!
 }
 
 type Mutation {
@@ -18,4 +20,9 @@ type Mutation {
     generateGraph(generateGraphRequest: GenerateGraphRequest!): Graph
 
     #plugin
+    createPlugin(plugin: PluginInput!, file: String!): Plugin
+    updatePlugin(plugin: PluginInput!, file: String!): Plugin
+    deletePlugin(id: ID!): String!
+    checkPluginSolution(solution: SolutionInput!): String!
+    checkPluginImplementation(id: ID!, file: String!): String!
 }

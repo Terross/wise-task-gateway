@@ -1,0 +1,46 @@
+input PluginInput {
+    id: ID!
+    name: String!
+    description: String!
+    category: String!
+    fileName: String
+    beanName: String
+    authorId: ID!
+    pluginType: PluginType!
+    isInternal: Boolean!
+}
+
+input SolutionInput {
+    pluginId: ID!
+    payload: Payload!
+    additionalPayload: AdditionalPayload
+}
+
+input Payload {
+    discriminator: String!
+    graph: GraphInput
+}
+
+input AdditionalPayload {
+    discriminator: String!
+    otherGraph: GraphInput
+    handwrittenAnswer: String
+}
+
+
+type Plugin {
+    id: ID!
+    name: String!
+    description: String!
+    category: String!
+    fileName: String
+    beanName: String
+    authorId: ID!
+    pluginType: PluginType!
+    isInternal: Boolean!
+}
+
+
+enum PluginType {
+    GRAPH
+}

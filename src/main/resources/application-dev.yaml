@@ -6,5 +6,8 @@ grpc:
     profile:
       host: localhost
       port: 6567
+    plugin:
+      host: localhost
+      port: 6566
 server:
   port: 8083
