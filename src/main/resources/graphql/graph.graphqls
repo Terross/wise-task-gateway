@@ -1,16 +1,20 @@
 input CreateGraphRequest {
-    id: String!
-    vertexCount: Int!
-    edgeCount: Int!
-    isDirect: Boolean!
-    vertexList: [VertexInput]!
-    edgeList: [EdgeInput]!
+   graph: GraphInput!
 }
 
 input GenerateGraphRequest {
     vertexCount: Int!
     edgeCount: Int!
     isDirect: Boolean!
+}
+
+input GraphInput {
+    id: ID!
+    vertexCount: Int!
+    edgeCount: Int!
+    isDirect: Boolean!
+    vertexList: [VertexInput]!
+    edgeList: [EdgeInput]!
 }
 
 input VertexInput {

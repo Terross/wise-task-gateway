@@ -15,7 +15,7 @@ type Mutation {
 
     #graph
     createGraph(graph: CreateGraphRequest!): Graph!
-    generateGraph(generateGraphRequest: GenerateGraphRequest!): Graph!
+    generateGraph(generateGraphRequest: GenerateGraphRequest!): Graph
 
     #plugin
 }
