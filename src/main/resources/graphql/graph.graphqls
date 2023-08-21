@@ -6,6 +6,7 @@ input GenerateGraphRequest {
     vertexCount: Int!
     edgeCount: Int!
     isDirect: Boolean!
+    isSaved: Boolean!
 }
 
 input GraphInput {

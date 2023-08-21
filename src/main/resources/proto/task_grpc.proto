@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+package ru.leti.wise.task.task;
+
+import "task.proto";
+import "google/protobuf/empty.proto";
+
+service TaskService {
+  rpc GetTask(GetTaskRequest) returns (GetTaskResponse);
+  rpc GetAllTask(google.protobuf.Empty) returns (GetAllTaskResponse);
+  rpc DeleteTask(DeleteTaskRequest) returns (google.protobuf.Empty);
+  rpc CreateTask(CreateTaskRequest) returns (CreateTaskResponse);
+  rpc UpdateTask(UpdateTaskRequest) returns (UpdateTaskResponse);
+  rpc SolveTask(SolveTaskRequest) returns (SolveTaskResponse);
+  rpc GetTaskSolution(GetTaskSolutionRequest) returns (GetTaskSolutionResponse);
+  rpc GetAllTaskSolutions(GetAllTaskSolutionsRequest) returns (GetAllTaskSolutionsResponse);
+  rpc GetUserSolutionStatistic(GetUserSolutionStatisticRequest) returns (GetUserSolutionStatisticResponse);
+}
+
+message GetTaskRequest {
+  string id = 1;
+}
+
+message GetTaskResponse {
+  Task task = 1;
+}
+
+message GetAllTaskResponse {
+  repeated Task task = 1;
+}
+
+message DeleteTaskRequest {
+  string id = 1;
+}
+
+message CreateTaskRequest {
+  Task task = 1;
+}
+
+message CreateTaskResponse {
+  Task task = 1;
+}
+
+message UpdateTaskRequest {
+  Task task = 1;
+}
+
+message UpdateTaskResponse {
+  Task task = 1;
+}
+
+message SolveTaskRequest {
+  SolutionRequest solution = 1;
+}
+
+message SolveTaskResponse {
+  SolutionResponse solution = 1;
+}
+
+message GetTaskSolutionRequest {
+  string id = 1;
+}
+
+message GetTaskSolutionResponse {
+  SolutionResponse solution = 1;
+}
+
+message GetAllTaskSolutionsRequest {
+  string task_id = 1;
+  string author_id = 2;
+}
+
+message GetAllTaskSolutionsResponse {
+  repeated SolutionResponse solution = 1;
+}
+
+message GetUserSolutionStatisticRequest {
+  string author_id = 1;
+}
+
+message GetUserSolutionStatisticResponse {
+  repeated SolutionResponse solution = 1;
+}

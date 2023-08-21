@@ -14,7 +14,7 @@ public interface ProfileMapper {
 
 
     ProfileOuterClass.Profile toProfile(ProfileInput profile);
-    Profile toProfileEntity(ProfileOuterClass.Profile profile);
+    Profile toProfile(ProfileOuterClass.Profile profile);
 
     List<Profile> toProfiles(List<ProfileOuterClass.Profile> profiles);
 

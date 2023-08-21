@@ -13,7 +13,8 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-public class ProfileController implements GetAllProfilesQueryResolver, SignUpMutationResolver, SignInMutationResolver {
+public class ProfileController implements GetAllProfilesQueryResolver, SignUpMutationResolver, SignInMutationResolver,
+GetProfileQueryResolver, UpdateProfileMutationResolver, DeleteTaskMutationResolver {
 
     private final ProfileGrpcService profileGrpcService;
     private final ProfileMapper profileMapper;
@@ -36,5 +37,21 @@ public class ProfileController implements GetAllProfilesQueryResolver, SignUpMut
     public Token signUp(@Argument SignUpRequest signUpRequest) {
         var response = profileGrpcService.signUp(profileMapper.toProfile(signUpRequest.getProfile()));
         return new Token(response);
+    }
+
+    @Override
+    public String deleteTask(String id) {
+        profileGrpcService.deleteProfile(id);
+        return id;
+    }
+
+    @Override
+    public Profile getProfile(String id) {
+        return profileMapper.toProfile(profileGrpcService.getProfile(id));
+    }
+
+    @Override
+    public Profile updateProfile(ProfileInput profile) {
+        return profileMapper.toProfile(profileGrpcService.updateProfile(profileMapper.toProfile(profile)));
     }
 }

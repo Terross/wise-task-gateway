@@ -22,8 +22,8 @@ public class PluginController implements GetAllPluginsQueryResolver, GetPluginQu
 
     @Override
     @MutationMapping
-    public String checkPluginImplementation(@Argument String id, @Argument String file) {
-        return pluginGrpcService.checkPluginImplementation(id, file);
+    public ImplementationResult checkPluginImplementation(@Argument String id, @Argument String file) {
+        return pluginMapper.toImplementationResult(pluginGrpcService.checkPluginImplementation(id, file));
     }
 
     @Override
@@ -34,8 +34,8 @@ public class PluginController implements GetAllPluginsQueryResolver, GetPluginQu
 
     @Override
     @MutationMapping
-    public Plugin createPlugin(@Argument PluginInput plugin, @Argument String file) {
-        return pluginMapper.toPlugin(pluginGrpcService.createPlugin(plugin, file));
+    public Plugin createPlugin(@Argument PluginInput plugin) {
+        return pluginMapper.toPlugin(pluginGrpcService.createPlugin(plugin));
     }
 
     @Override
@@ -58,7 +58,7 @@ public class PluginController implements GetAllPluginsQueryResolver, GetPluginQu
 
     @Override
     @MutationMapping
-    public Plugin updatePlugin(@Argument PluginInput plugin, @Argument String file) {
-        return pluginMapper.toPlugin(pluginGrpcService.updatePlugin(plugin, file));
+    public Plugin updatePlugin(@Argument PluginInput plugin) {
+        return pluginMapper.toPlugin(pluginGrpcService.updatePlugin(plugin));
     }
 }

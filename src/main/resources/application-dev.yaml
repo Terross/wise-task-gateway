@@ -9,5 +9,8 @@ grpc:
     plugin:
       host: localhost
       port: 6566
+    task:
+      host: localhost
+      port: 6568
 server:
   port: 8083

@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package ru.leti.wise.task.task;
+
+import "graph.proto";
+import "plugin.proto";
+
+enum Category {
+  BASIC = 0;
+}
+
+message Task {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string author_id = 4;
+  Category category = 5;
+  ru.leti.wise.task.graph.Graph graph = 6;
+  repeated Condition condition_list = 7;
+}
+
+message SolutionRequest {
+  string id = 1;
+  string task_id = 2;
+  string author_id = 3;
+  ru.leti.wise.task.graph.Graph graph = 4;
+}
+
+message SolutionResponse {
+  string id = 1;
+  string task_id = 2;
+  string author_id = 3;
+  ru.leti.wise.task.graph.Graph graph = 4;
+  bool is_correct = 5;
+  repeated PluginResult plugin_result_list = 6;
+}
+
+message PluginResult {
+  string id = 1;
+  string plugin_id = 2;
+  bool is_correct = 3;
+  Answer answer = 4;
+  Answer excepted_answer = 5;
+}
+
+message Condition {
+  string id = 1;
+  string task_id = 2;
+  string plugin_id = 3;
+  Answer answer = 4;
+}
+
+message Answer {
+  string id = 1;
+  ru.leti.wise.task.plugin.PluginType plugin_type = 2;
+  string value = 3;
+}

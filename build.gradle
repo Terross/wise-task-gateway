@@ -1,7 +1,9 @@
+import org.flywaydb.gradle.task.FlywayMigrateTask
 
 plugins {
     id 'java'
     id "com.google.protobuf" version "0.9.2"
+    id "org.flywaydb.flyway" version "9.21.1"
     id 'org.springframework.boot' version "${springBootVersion}"
     id 'io.spring.dependency-management' version "${dependencyManagementPluginVersion}"
     id "io.github.kobylynskyi.graphql.codegen" version "5.7.2"
@@ -48,7 +50,6 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
-
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
     annotationProcessor 'no.entur.mapstruct.spi:protobuf-spi-impl:1.42'
@@ -60,6 +61,30 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework:spring-webflux'
     testImplementation 'org.springframework.graphql:spring-graphql-test'
+}
+
+task pluginMigrate(type: FlywayMigrateTask) {
+    url = 'jdbc:postgresql://localhost:5432/wise_task_plugin'
+    user = 'wise_task_plugin'
+    password = 'wise_task_plugin'
+    cleanDisabled = false
+    locations = ['filesystem:./src/main/resources/db/migration']
+}
+
+task profileMigrate(type: FlywayMigrateTask) {
+    url = 'jdbc:postgresql://localhost:5432/wise_task_profile'
+    user = 'wise_task_profile'
+    password = 'wise_task_profile'
+    cleanDisabled = false
+    locations = ['filesystem:./src/main/resources/db/profile/migration']
+}
+
+task taskMigrate(type: FlywayMigrateTask) {
+    url = 'jdbc:postgresql://localhost:5432/wise_task_task'
+    user = 'wise_task_task'
+    password = 'wise_task_task'
+    cleanDisabled = false
+    locations = ['filesystem:./src/main/resources/db/task/migration']
 }
 
 graphqlCodegen {

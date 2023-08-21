@@ -21,13 +21,37 @@ public class ProfileGrpcService {
         return profileStubHolder.get().getAllProfiles(request).getProfileList();
     }
 
+    public Profile getProfile(String id) {
+        var request = ProfileGrpc.GetProfileRequest.newBuilder()
+                .setProfileId(id)
+                .build();
+
+        return profileStubHolder.get().getProfile(request).getProfile();
+    }
+
+    public void deleteProfile(String id) {
+        var request = ProfileGrpc.DeleteProfileRequest.newBuilder()
+                .setProfileId(id)
+                .build();
+
+        profileStubHolder.get().deleteProfile(request);
+    }
+
+    public Profile updateProfile(Profile profile) {
+        var request = ProfileGrpc.UpdateProfileRequest.newBuilder()
+                .setProfile(profile)
+                .build();
+
+        return profileStubHolder.get().updateProfile(request).getProfile();
+    }
+
     public String signIn(String email, String password) {
         var request = ProfileGrpc.SignInRequest.newBuilder()
                 .setEmail(email)
                 .setPassword(password)
                 .build();
 
-        return profileStubHolder.get().signIn(request).getJWT();
+        return profileStubHolder.get().signIn(request).getToken();
     }
 
     public String signUp(Profile profile) {
@@ -35,6 +59,6 @@ public class ProfileGrpcService {
                 .setProfile(profile)
                 .build();
 
-        return profileStubHolder.get().signUp(request).getJWT();
+        return profileStubHolder.get().signUp(request).getToken();
     }
 }

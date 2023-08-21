@@ -22,13 +22,13 @@ public class PluginGrpcService {
     private final GraphMapper graphMapper;
     private final PluginMapper pluginMapper;
 
-    public String checkPluginImplementation(String id, String file) {
+    public PluginOuterClass.ImplementationResult checkPluginImplementation(String id, String file) {
         var request = PluginGrpc.CheckPluginImplementationRequest.newBuilder()
                 .setId(id)
                 .setFile(file)
                 .build();
 
-        return pluginStubHolder.get().checkPluginImplementation(request).getResult();
+        return pluginStubHolder.get().checkPluginImplementation(request).getImplementationResult();
     }
 
     public String checkPluginSolution(SolutionInput solution) {
@@ -40,9 +40,8 @@ public class PluginGrpcService {
     }
 
 
-    public PluginOuterClass.Plugin createPlugin(PluginInput plugin, String file) {
+    public PluginOuterClass.Plugin createPlugin(PluginInput plugin) {
         var request = PluginGrpc.CreatePluginRequest.newBuilder()
-                .setFile(file)
                 .setPlugin(pluginMapper.toPlugin(plugin))
                 .build();
 
@@ -69,10 +68,9 @@ public class PluginGrpcService {
         return pluginStubHolder.get().getPlugin(request).getPlugin();
     }
 
-    public PluginOuterClass.Plugin updatePlugin(PluginInput plugin, String file) {
+    public PluginOuterClass.Plugin updatePlugin(PluginInput plugin) {
         var request = PluginGrpc.UpdatePluginRequest.newBuilder()
                 .setPlugin(pluginMapper.toPlugin(plugin))
-                .setFile(file)
                 .build();
 
         return pluginStubHolder.get().updatePlugin(request).getPlugin();
