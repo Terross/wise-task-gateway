@@ -1,0 +1,78 @@
+version: '3.7'
+
+services:
+  wise-task-graph:
+    image: ghcr.io/terross/wise-task-graph:main
+    depends_on:
+      - wise-task-mongo
+    container_name: wise-task-graph
+    ports:
+      - "6565:6565"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+
+
+  wise-task-plugin:
+    image: ghcr.io/terross/wise-task-plugin:main
+    depends_on:
+      - wise-task-db
+      - wise-task-graph
+    container_name:  wise-task-plugin
+    ports:
+      - "6566:6566"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+
+
+  wise-task-profile:
+    image: ghcr.io/terross/wise-task-profile:main
+    depends_on:
+      - wise-task-db
+    container_name: wise-task-profile
+    ports:
+      - "6567:6567"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+
+
+  wise-task-task:
+    image: ghcr.io/terross/wise-task-task:main
+    depends_on:
+      - wise-task-db
+      - wise-task-graph
+      - wise-task-plugin
+    container_name: wise-task-task
+    ports:
+      - "6568:6568"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+
+
+  wise-task-gateway:
+    image: ghcr.io/terross/wise-task-gateway:main
+    depends_on:
+      - wise-task-plugin
+      - wise-task-profile
+      - wise-task-graph
+      - wise-task-task
+    container_name: wise-task-gateway
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+
+  wise-task-mongo:
+    image: mongo:latest
+    container_name: wise-task-mongo
+    ports:
+      - "27017:27017"
+
+
+  wise-task-db:
+    image: postgres:13.1-alpine
+    container_name: wise-task-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=wise_task
+      - POSTGRES_PASSWORD=wise_task

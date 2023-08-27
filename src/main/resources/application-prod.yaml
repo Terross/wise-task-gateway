@@ -1,0 +1,16 @@
+grpc:
+  service:
+    graph:
+      host: wise-task-graph
+      port: 6565
+    profile:
+      host: wise-task-profile
+      port: 6567
+    plugin:
+      host: wise-task-plugin
+      port: 6566
+    task:
+      host: wise-task-task
+      port: 6568
+server:
+  port: 8083

@@ -10,7 +10,7 @@ plugins {
 }
 
 group = 'ru.leti'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0'
 sourceCompatibility = '17'
 
 configurations {
@@ -45,6 +45,7 @@ dependencies {
     // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
     implementation 'io.jsonwebtoken:jjwt:0.2'
     implementation 'javax.xml.bind:jaxb-api:2.1'
+    implementation 'org.postgresql:postgresql:42.2.27'
 
     implementation 'org.springframework.boot:spring-boot-starter-graphql'
     compileOnly 'org.projectlombok:lombok'
@@ -68,7 +69,7 @@ task pluginMigrate(type: FlywayMigrateTask) {
     user = 'wise_task_plugin'
     password = 'wise_task_plugin'
     cleanDisabled = false
-    locations = ['filesystem:./src/main/resources/db/migration']
+    locations = ['filesystem:./src/main/resources/db/plugin/migration']
 }
 
 task profileMigrate(type: FlywayMigrateTask) {
