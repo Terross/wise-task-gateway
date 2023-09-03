@@ -2,6 +2,7 @@ package ru.leti.wise.task.gateway.controller;
 
 import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -12,6 +13,7 @@ import ru.leti.wise.task.gateway.service.grpc.profile.ProfileGrpcService;
 
 import java.util.List;
 
+@Slf4j
 @Observed
 @Controller
 @RequiredArgsConstructor
@@ -24,6 +26,7 @@ GetProfileQueryResolver, UpdateProfileMutationResolver, DeleteTaskMutationResolv
     @Override
     @QueryMapping
     public List<Profile> getAllProfiles() {
+        log.info("getAllProfiles");
         return profileMapper.toProfiles(profileGrpcService.getAllProfiles());
     }
 

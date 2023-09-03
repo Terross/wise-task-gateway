@@ -1,5 +1,6 @@
 package ru.leti.wise.task.gateway.service.grpc.graph;
 
+import io.grpc.ClientInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.leti.wise.task.graph.GraphServiceGrpc;
@@ -14,6 +15,7 @@ import static ru.leti.wise.task.graph.GraphServiceGrpc.newBlockingStub;
 public class GraphStubHolder {
 
     private final GraphGrpcProperties graphGrpcProperties;
+    private final ClientInterceptor grpcTracingClientInterceptor;
 
     private GraphServiceGrpc.GraphServiceBlockingStub graphServiceStub;
 
@@ -21,6 +23,7 @@ public class GraphStubHolder {
     @PostConstruct
     void init() {
         graphServiceStub = newBlockingStub(forAddress(graphGrpcProperties.host(), graphGrpcProperties.port())
+                .intercept(grpcTracingClientInterceptor)
                 .usePlaintext().build());
     }
 

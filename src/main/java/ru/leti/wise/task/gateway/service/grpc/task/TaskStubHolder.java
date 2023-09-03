@@ -1,5 +1,6 @@
 package ru.leti.wise.task.gateway.service.grpc.task;
 
+import io.grpc.ClientInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.leti.wise.task.task.TaskServiceGrpc;
@@ -14,6 +15,7 @@ import static ru.leti.wise.task.task.TaskServiceGrpc.newBlockingStub;
 public class TaskStubHolder {
 
     private final TaskGrpcProperties taskGrpcProperties;
+    private final ClientInterceptor grpcTracingClientInterceptor;
 
     private TaskServiceGrpc.TaskServiceBlockingStub taskServiceStub;
 
@@ -21,6 +23,7 @@ public class TaskStubHolder {
     @PostConstruct
     void init() {
         taskServiceStub = newBlockingStub(forAddress(taskGrpcProperties.host(), taskGrpcProperties.port())
+                .intercept(grpcTracingClientInterceptor)
                 .usePlaintext().build());
     }
 
