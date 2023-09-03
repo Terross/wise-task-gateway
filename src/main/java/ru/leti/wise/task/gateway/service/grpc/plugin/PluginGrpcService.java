@@ -1,6 +1,7 @@
 package ru.leti.wise.task.gateway.service.grpc.plugin;
 
 import com.google.protobuf.Empty;
+import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.leti.graphql.model.*;
@@ -15,6 +16,7 @@ import java.util.List;
 
 
 @Component
+@Observed
 @RequiredArgsConstructor
 public class PluginGrpcService {
 

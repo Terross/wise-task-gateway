@@ -8,6 +8,8 @@ RUN USERNAME=$USERNAME TOKEN=$TOKEN gradle build --no-daemon
 
 FROM openjdk:17
 
+EXPOSE 8084
+
 RUN mkdir /app
 
 COPY --from=build /src/build/libs/wise-task-gateway-1.0.0.jar /app/app.jar

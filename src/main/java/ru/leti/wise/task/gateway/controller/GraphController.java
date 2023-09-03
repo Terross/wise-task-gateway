@@ -1,5 +1,6 @@
 package ru.leti.wise.task.gateway.controller;
 
+import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -9,6 +10,7 @@ import ru.leti.graphql.model.*;
 import ru.leti.wise.task.gateway.mapper.GraphMapper;
 import ru.leti.wise.task.gateway.service.grpc.graph.GraphGrpcService;
 
+@Observed
 @Controller
 @RequiredArgsConstructor
 public class GraphController implements CreateGraphMutationResolver, GenerateGraphMutationResolver,

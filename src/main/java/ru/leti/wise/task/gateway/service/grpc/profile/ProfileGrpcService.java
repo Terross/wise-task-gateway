@@ -1,6 +1,7 @@
 package ru.leti.wise.task.gateway.service.grpc.profile;
 
 import com.google.protobuf.Empty;
+import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.leti.wise.task.profile.ProfileGrpc;
@@ -10,6 +11,7 @@ import java.util.List;
 
 
 @Component
+@Observed
 @RequiredArgsConstructor
 public class ProfileGrpcService {
 

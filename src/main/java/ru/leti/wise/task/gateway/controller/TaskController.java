@@ -1,5 +1,6 @@
 package ru.leti.wise.task.gateway.controller;
 
+import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import ru.leti.graphql.model.*;
@@ -8,6 +9,7 @@ import ru.leti.wise.task.gateway.service.grpc.task.TaskGrpcService;
 
 import java.util.List;
 
+@Observed
 @Controller
 @RequiredArgsConstructor
 public class TaskController implements GetTaskQueryResolver, GetAllTasksQueryResolver, GetTaskSolutionQueryResolver,

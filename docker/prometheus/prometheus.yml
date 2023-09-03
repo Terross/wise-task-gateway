@@ -9,11 +9,11 @@ scrape_configs:
   - job_name: 'wise-task-graph'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: [ 'wise-task-profile:8080' ]
+      - targets: [ 'wise-task-graph:8080' ]
   - job_name: 'wise-task-plugin'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: [ 'wise-task-profile:8081' ]
+      - targets: [ 'wise-task-plugin:8081' ]
   - job_name: 'wise-task-profile'
     metrics_path: '/actuator/prometheus'
     static_configs:
@@ -21,8 +21,8 @@ scrape_configs:
   - job_name: 'wise-task-task'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: [ 'wise-task-profile:8083' ]
+      - targets: [ 'wise-task-task:8083' ]
   - job_name: 'wise-task-gateway'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: [ 'wise-task-profile:8084' ]
+      - targets: [ 'wise-task-gateway:8084' ]

@@ -1,5 +1,6 @@
 package ru.leti.wise.task.gateway.controller;
 
+import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -11,6 +12,7 @@ import ru.leti.wise.task.gateway.service.grpc.plugin.PluginGrpcService;
 
 import java.util.List;
 
+@Observed
 @Controller
 @RequiredArgsConstructor
 public class PluginController implements GetAllPluginsQueryResolver, GetPluginQueryResolver,
