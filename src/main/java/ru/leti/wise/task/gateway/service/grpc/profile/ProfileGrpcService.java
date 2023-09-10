@@ -31,6 +31,14 @@ public class ProfileGrpcService {
         return profileStubHolder.get().getProfile(request).getProfile();
     }
 
+    public Profile getProfileByEmail(String email) {
+        var request = ProfileGrpc.GetProfileByEmailRequest.newBuilder()
+                .setEmail(email)
+                .build();
+
+        return profileStubHolder.get().getProfileByEmail(request).getProfile();
+    }
+
     public void deleteProfile(String id) {
         var request = ProfileGrpc.DeleteProfileRequest.newBuilder()
                 .setProfileId(id)
@@ -47,20 +55,20 @@ public class ProfileGrpcService {
         return profileStubHolder.get().updateProfile(request).getProfile();
     }
 
-    public String signIn(String email, String password) {
+    public Profile signIn(String email, String password) {
         var request = ProfileGrpc.SignInRequest.newBuilder()
                 .setEmail(email)
                 .setPassword(password)
                 .build();
 
-        return profileStubHolder.get().signIn(request).getToken();
+        return profileStubHolder.get().signIn(request).getProfile();
     }
 
-    public String signUp(Profile profile) {
+    public Profile signUp(Profile profile) {
         var request = ProfileGrpc.SignUpRequest.newBuilder()
                 .setProfile(profile)
                 .build();
 
-        return profileStubHolder.get().signUp(request).getToken();
+        return profileStubHolder.get().signUp(request).getProfile();
     }
 }
