@@ -28,7 +28,7 @@ GetProfileQueryResolver, UpdateProfileMutationResolver, DeleteProfileMutationRes
 
     @Override
     @QueryMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("isAnonymous()")
     public List<Profile> getAllProfiles() {
         return profileMapper.toProfiles(profileGrpcService.getAllProfiles());
     }
@@ -55,12 +55,14 @@ GetProfileQueryResolver, UpdateProfileMutationResolver, DeleteProfileMutationRes
 
     @Override
     @MutationMapping
+    @PreAuthorize("isAnonymous()")
     public Profile updateProfile(ProfileInput profile) {
         return profileMapper.toProfile(profileGrpcService.updateProfile(profileMapper.toProfile(profile)));
     }
 
     @Override
     @MutationMapping
+    @PreAuthorize("isAnonymous()")
     public String deleteProfile(String id) {
         profileGrpcService.deleteProfile(id);
         return id;

@@ -26,3 +26,7 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: [ 'wise-task-gateway:8084' ]
+  - job_name: 'wise-task-event-adapter'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'wise-task-event-adapter:8085' ]
