@@ -49,21 +49,22 @@ GetProfileQueryResolver, UpdateProfileMutationResolver, DeleteProfileMutationRes
 
     @Override
     @QueryMapping
-    public Profile getProfile(String id) {
+    @PreAuthorize("isAnonymous()")
+    public Profile getProfile(@Argument String id) {
         return profileMapper.toProfile(profileGrpcService.getProfile(id));
     }
 
     @Override
     @MutationMapping
     @PreAuthorize("isAnonymous()")
-    public Profile updateProfile(ProfileInput profile) {
+    public Profile updateProfile(@Argument ProfileInput profile) {
         return profileMapper.toProfile(profileGrpcService.updateProfile(profileMapper.toProfile(profile)));
     }
 
     @Override
     @MutationMapping
     @PreAuthorize("isAnonymous()")
-    public String deleteProfile(String id) {
+    public String deleteProfile(@Argument String id) {
         profileGrpcService.deleteProfile(id);
         return id;
     }

@@ -5,6 +5,7 @@ type Query {
 
     #graph
     getGraphById(id: ID!): Graph!
+    getGraphLibrary: [Graph]!
 
     #plugin
     getAllPlugins: [Plugin]!
@@ -26,7 +27,7 @@ type Mutation {
     deleteProfile(id: ID!): String!
 
     #graph
-    createGraph(graph: CreateGraphRequest!): Graph!
+    createGraph(graph: GraphInput!): Graph!
     generateGraph(generateGraphRequest: GenerateGraphRequest!): Graph
 
     #plugin

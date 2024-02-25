@@ -1,5 +1,7 @@
 package ru.leti.wise.task.gateway.security.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -9,20 +11,27 @@ import org.springframework.stereotype.Component;
 import ru.leti.wise.task.gateway.security.configuration.JwtProperties;
 import ru.leti.wise.task.gateway.security.user.UserDetailsImpl;
 
+import java.lang.reflect.Type;
 import java.security.Key;
 import java.util.Date;
+import java.util.Map;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtUtils {
 
+    private final ObjectMapper objectMapper;
     private final JwtProperties jwtProperties;
 
     public String generateJwtToken(UserDetailsImpl user) {
-
+        var profile = user.getProfile();
         return Jwts.builder()
-                .setSubject(user.getUsername())
+                .setClaims(Map.of(
+                        "role", profile.getProfileRole(),
+                        "id", profile.getId(),
+                        "email", profile.getEmail()
+                ))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtProperties.expiration()))
                 .signWith(SignatureAlgorithm.HS256, key())

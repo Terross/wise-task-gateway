@@ -12,3 +12,5 @@ CREATE TABLE wise_task_profile.profile
     student_group    VARCHAR,
     student_course   INT
 );
+
+CREATE UNIQUE INDEX email_uk ON wise_task_profile.profile (email)

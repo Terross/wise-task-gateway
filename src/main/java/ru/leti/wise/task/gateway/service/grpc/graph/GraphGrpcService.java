@@ -1,5 +1,6 @@
 package ru.leti.wise.task.gateway.service.grpc.graph;
 
+import com.google.protobuf.Empty;
 import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -8,6 +9,8 @@ import ru.leti.graphql.model.GraphInput;
 import ru.leti.wise.task.gateway.mapper.GraphMapper;
 import ru.leti.wise.task.graph.GraphGrpc;
 import ru.leti.wise.task.graph.GraphOuterClass.Graph;
+
+import java.util.List;
 
 
 @Component
@@ -38,5 +41,9 @@ public class GraphGrpcService {
                 .build();
 
         return graphStubHolder.get().getGraphById(request).getGraph();
+    }
+
+    public List<Graph> getGraphLibrary() {
+        return graphStubHolder.get().getGraphLibrary(Empty.newBuilder().build()).getGraphListList();
     }
 }

@@ -8,7 +8,7 @@ input SignUpRequest {
 }
 
 input ProfileInput {
-    id : ID!
+    id : ID
     email: String!
     profilePassword: String!
     firstName: String!
@@ -16,7 +16,6 @@ input ProfileInput {
     patronymic: String
     profileRole: Role!
     studentGroup: String
-    studentCourse: Int
 }
 
 type Token {
@@ -32,7 +31,6 @@ type Profile {
     patronymic: String
     profileRole: Role!
     studentGroup: String
-    studentCourse: Int
 }
 
 enum Role {

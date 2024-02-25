@@ -1,6 +1,7 @@
 package ru.leti.wise.task.gateway.security.user;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,8 +15,11 @@ public class UserDetailsImpl implements UserDetails {
 
     private String username;
     private Collection<? extends GrantedAuthority> authorities;
+    @Getter
+    private Profile profile;
 
     public UserDetailsImpl(Profile profile) {
+        this.profile = profile;
         this.username = profile.getEmail();
         this.authorities = List.of(new SimpleGrantedAuthority("ROLE_" + profile.getProfileRole().name()));
     }

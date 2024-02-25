@@ -16,6 +16,8 @@ input GraphInput {
     isDirect: Boolean!
     vertexList: [VertexInput]!
     edgeList: [EdgeInput]!
+    isNamed: Boolean!
+    name: String
 }
 
 input VertexInput {
@@ -42,6 +44,8 @@ type Graph {
     isDirect: Boolean!
     vertexList: [Vertex]!
     edgeList: [Edge]!
+    isNamed: Boolean!
+    name: String
 }
 
 type Vertex {
