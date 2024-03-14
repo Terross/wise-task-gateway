@@ -11,6 +11,7 @@ import ru.leti.wise.task.graph.GraphGrpc;
 import ru.leti.wise.task.graph.GraphOuterClass.Graph;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @Component
@@ -45,5 +46,13 @@ public class GraphGrpcService {
 
     public List<Graph> getGraphLibrary() {
         return graphStubHolder.get().getGraphLibrary(Empty.newBuilder().build()).getGraphListList();
+    }
+
+    public String deleteGraph(String id) {
+        var request = GraphGrpc.RemoveGraphRequest.newBuilder()
+                .setId(id)
+                .build();
+
+        return graphStubHolder.get().removeGraph(request).getId();
     }
 }

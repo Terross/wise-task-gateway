@@ -17,7 +17,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class GraphController implements CreateGraphMutationResolver, GenerateGraphMutationResolver,
-        GetGraphByIdQueryResolver, GetGraphLibraryQueryResolver {
+        GetGraphByIdQueryResolver, GetGraphLibraryQueryResolver, DeleteGraphMutationResolver {
 
     private final GraphMapper graphMapper;
     private final GraphGrpcService graphGrpcService;
@@ -49,5 +49,12 @@ public class GraphController implements CreateGraphMutationResolver, GenerateGra
     @QueryMapping
     public List<Graph> getGraphLibrary() {
         return graphMapper.toGraphs(graphGrpcService.getGraphLibrary());
+    }
+
+    @Override
+    @PreAuthorize("isAnonymous()")
+    @MutationMapping
+    public String deleteGraph(@Argument String id) {
+        return graphGrpcService.deleteGraph(id);
     }
 }
