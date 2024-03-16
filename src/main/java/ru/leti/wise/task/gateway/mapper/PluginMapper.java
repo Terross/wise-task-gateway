@@ -34,4 +34,12 @@ public interface PluginMapper {
     default PluginType toPluginType(PluginOuterClass.PluginType pluginType) {
         return PluginType.valueOf(pluginType.name());
     }
+
+    default PluginOuterClass.GraphType toPluginType(GraphType graphType) {
+        return PluginOuterClass.GraphType.valueOf(graphType.name());
+    }
+
+    default GraphType toPluginType(PluginOuterClass.GraphType graphType) {
+        return GraphType.valueOf(graphType.name());
+    }
 }

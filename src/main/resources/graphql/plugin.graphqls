@@ -3,9 +3,11 @@ input PluginInput {
     name: String!
     description: String!
     category: String!
-    authorId: ID!
     jarName: String
     jarFile: String
+    authorId: ID!
+    isValid: Boolean!
+    graphType: GraphType!
     beanName: String
     pluginType: PluginType!
     isInternal: Boolean!
@@ -34,9 +36,11 @@ type Plugin {
     name: String!
     description: String!
     category: String!
-    authorId: ID!
     jarName: String
     jarFile: String
+    authorId: ID!
+    graphType: GraphType!
+    isValid: Boolean!
     beanName: String
     pluginType: PluginType!
     isInternal: Boolean!
@@ -69,4 +73,10 @@ enum PayloadType {
 enum AdditionPayloadType {
     GRAPH,
     STRING
+}
+
+enum GraphType {
+    DIRECT,
+    UNDIRECT,
+    ANY
 }

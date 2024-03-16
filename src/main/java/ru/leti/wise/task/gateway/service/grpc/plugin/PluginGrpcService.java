@@ -77,4 +77,12 @@ public class PluginGrpcService {
 
         return pluginStubHolder.get().updatePlugin(request).getPlugin();
     }
+
+    public String validatePlugin(String id) {
+        var request = PluginGrpc.ValidatePluginRequest.newBuilder()
+                .setId(id)
+                .build();
+
+        return pluginStubHolder.get().validatePlugin(request).getId();
+    }
 }

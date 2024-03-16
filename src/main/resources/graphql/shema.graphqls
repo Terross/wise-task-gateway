@@ -37,6 +37,7 @@ type Mutation {
     deletePlugin(id: ID!): String!
     checkPluginSolution(solution: SolutionInput!): String!
     checkPluginImplementation(id: ID!, file: String!): ImplementationResult!
+    validatePlugin(id: ID!): String!
 
     #task
     deleteTask(id: ID!): String!

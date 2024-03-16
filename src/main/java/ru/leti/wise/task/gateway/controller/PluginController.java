@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import ru.leti.graphql.model.*;
 import ru.leti.wise.task.gateway.mapper.PluginMapper;
@@ -17,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PluginController implements GetAllPluginsQueryResolver, GetPluginQueryResolver,
         CreatePluginMutationResolver, UpdatePluginMutationResolver, DeletePluginMutationResolver,
-        CheckPluginSolutionMutationResolver, CheckPluginImplementationMutationResolver {
+        CheckPluginSolutionMutationResolver, CheckPluginImplementationMutationResolver, ValidatePluginMutationResolver {
 
     private final PluginGrpcService pluginGrpcService;
     private final PluginMapper pluginMapper;
@@ -62,5 +63,12 @@ public class PluginController implements GetAllPluginsQueryResolver, GetPluginQu
     @MutationMapping
     public Plugin updatePlugin(@Argument PluginInput plugin) {
         return pluginMapper.toPlugin(pluginGrpcService.updatePlugin(plugin));
+    }
+
+    @Override
+    @PreAuthorize("isAnonymous()")
+    @MutationMapping
+    public String validatePlugin(@Argument String id) {
+        return pluginGrpcService.validatePlugin(id);
     }
 }
