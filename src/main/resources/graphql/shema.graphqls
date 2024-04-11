@@ -14,9 +14,9 @@ type Query {
     #task
     getTask(id: ID!): Task!
     getAllTasks: [Task]!
-    getTaskSolution(id: ID!): TaskSolution!
-    getAllTaskSolutions(userId: ID!, taskId: ID!): [TaskSolution]!
-    getUserSolutionStatistic(userId: ID!): [TaskSolution]!
+    getTaskSolution(id: ID!): Solution!
+    getAllTaskSolutions(userId: ID!, taskId: ID!): [Solution]!
+    getUserSolutionStatistic(userId: ID!): [Solution]!
 }
 
 type Mutation {
@@ -41,7 +41,10 @@ type Mutation {
 
     #task
     deleteTask(id: ID!): String!
-    createTask(task: TaskInput!): Task!
-    updateTask(task: TaskInput!): Task!
-    solveTask(solution: TaskSolutionInput!): TaskSolution!
+    createGraphTask(task: TaskGraphInput!): TaskGraph!
+    createImplementationTask(task: TaskImplementationInput!): TaskImplementation!
+    updateGraphTask(task: TaskGraphInput!): TaskGraph!
+    updateImplementationTask(task: TaskImplementationInput!): TaskImplementation!
+    solveGraphTask(solution: SolutionGraphInput!): SolutionGraph!
+    solveImplementationTask(solution: SolutionImplementationInput!): SolutionImplementation!
 }

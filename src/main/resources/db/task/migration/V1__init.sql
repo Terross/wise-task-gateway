@@ -25,6 +25,7 @@ CREATE TABLE wise_task_task.task_graph
     is_hidden_mistake BOOLEAN NOT NULL DEFAULT false,
     graph_id          UUID,
     condition         jsonb, -- [{"pluginId":"123","value":"123","mistakeText":"123",?"sign":"MORE"}]
+    rule             jsonb, -- {"color":false,"edit":true}
 
     CONSTRAINT fk_task_id FOREIGN KEY (id) REFERENCES wise_task_task.task (id)
 );
@@ -71,7 +72,7 @@ CREATE TABLE wise_task_task.solution_graph
 (
     id            UUID  NOT NULL PRIMARY KEY,
     graph_id      UUID  NOT NULL,
-    plugin_result jsonb NOT NULL, -- '[{"pluginId:"123", "isCorrect":true, "value":"123", ?"trueValue":"124"}]'
+    result jsonb NOT NULL, -- '[{"pluginId:"123", "isCorrect":true, "value":"123", ?"trueValue":"124"}]'
 
     CONSTRAINT fk_solution_id FOREIGN KEY (id) REFERENCES wise_task_task.solution (id)
 );

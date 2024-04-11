@@ -1,73 +1,151 @@
-input TaskInput {
+enum TaskType {
+    GRAPH
+    IMPLEMENTATION
+}
+
+input RuleInput {
+    isColor: Boolean!
+    isEdit: Boolean!
+    isMove: Boolean!
+    isDelete: Boolean!
+}
+
+input PluginInfoInput {
+    pluginId: String!
+    value: String!
+    mistakeText: String
+    sign: String
+    pluginType: PluginType!
+}
+
+input TaskGraphInput {
     id: ID!
     name: String!
     description: String!
-    authorId: ID!
-    category: Category!
+    category: String!
+    taskType: TaskType!
+    authorId: String!
+    isPublic: Boolean!
+    isHiddenMistake: Boolean!
     graph: GraphInput
-    conditionList: [ConditionInput]!
+    rule: RuleInput!
+    condition: [PluginInfoInput]!
 }
 
-input TaskSolutionInput {
+input TaskImplementationInput {
     id: ID!
-    taskId: ID!
-    authorId: ID!
+    name: String!
+    description: String!
+    category: String!
+    taskType: TaskType!
+    authorId: String!
+    isPublic: Boolean!
+    pluginId: String!
+}
+# -------------------------------------------------------------------------
+
+interface Task {
+    id: ID!
+    name: String!
+    description: String!
+    category: String!
+    taskType: TaskType!
+    authorId: String!
+    isPublic: Boolean!
+}
+
+type Rule {
+    isColor: Boolean!
+    isEdit: Boolean!
+    isMove: Boolean!
+    isDelete: Boolean!
+}
+
+type PluginInfo {
+    pluginId: String!
+    value: String!
+    mistakeText: String
+    sign: String
+    pluginType: PluginType!
+}
+
+type TaskGraph implements Task {
+    id: ID!
+    name: String!
+    description: String!
+    category: String!
+    taskType: TaskType!
+    authorId: String!
+    isPublic: Boolean!
+    isHiddenMistake: Boolean!
+    graph: Graph
+    rule: Rule!
+    condition: [PluginInfo]!
+}
+
+type TaskImplementation implements Task {
+    id: ID!
+    name: String!
+    description: String!
+    category: String!
+    taskType: TaskType!
+    authorId: String!
+    isPublic: Boolean!
+    pluginId: String!
+}
+# ---------------------------------------------------------------------------------
+
+input SolutionGraphInput {
+    id: ID!
+    taskId: String!
+    authorId: String!
     graph: GraphInput!
 }
 
-input ConditionInput {
+input SolutionImplementationInput {
     id: ID!
-    taskId: ID!
-    pluginId: ID!
-    answer: AnswerInput!
+    taskId: String!
+    authorId: String!
+    code: String!
 }
 
-input AnswerInput {
-    id: ID!
-    pluginType: PluginType!
-    value: String!
-}
+# ---------------------------------------------------------------------------------
 
-type Task {
+interface Solution {
     id: ID!
-    name: String!
-    description: String!
-    authorId: ID!
-    category: Category!
-    graph: Graph
-    conditionList: [Condition]
-}
-
-type TaskSolution {
-    id: ID!
-    taskId: ID!
-    authorId: ID!
-    graph: Graph
+    taskId: String!
+    authorId: String!
     isCorrect: Boolean!
-    pluginResultList: [PluginResult]
+}
+
+type SolutionGraph implements Solution {
+    id: ID!
+    taskId: String!
+    authorId: String!
+    isCorrect: Boolean!
+    graph: Graph!
+    pluginResults: [PluginResult]!
+}
+
+type SolutionImplementation implements Solution {
+    id: ID!
+    taskId: String!
+    authorId: String!
+    isCorrect: Boolean!
+    implementationResults: [ImplementationResult]!
 }
 
 type PluginResult {
-    id: ID!
-    pluginId: ID!
+    pluginId: String!
     isCorrect: Boolean!
-    answer: Answer!
-    exceptedAnswer: Answer!
-}
-
-type Condition {
-    id: ID!
-    taskId: ID!
-    pluginId: ID!
-    answer: Answer!
-}
-
-type Answer {
-    id: ID!
-    pluginType: PluginType!
     value: String!
+    trueValue: String!
 }
 
-enum Category {
-    BASIC
+type GraphResult {
+    id: String!
+    originalTimeResult: Float!
+    timeResult: Float!
+    originalResult: String!
+    result: String!
 }
