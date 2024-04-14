@@ -5,8 +5,7 @@ import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.leti.wise.task.task.TaskGrpc;
-import ru.leti.wise.task.task.TaskOuterClass.SolutionRequest;
-import ru.leti.wise.task.task.TaskOuterClass.SolutionResponse;
+import ru.leti.wise.task.task.TaskOuterClass;
 import ru.leti.wise.task.task.TaskOuterClass.Task;
 
 import java.util.List;
@@ -55,7 +54,7 @@ public class TaskGrpcService {
         return taskStubHolder.get().updateTask(request).getTask();
     }
 
-    public SolutionResponse solveTask(SolutionRequest solutionRequest) {
+    public TaskOuterClass.Solution solveTask(TaskOuterClass.Solution solutionRequest) {
         var request = TaskGrpc.SolveTaskRequest.newBuilder()
                 .setSolution(solutionRequest)
                 .build();
@@ -63,7 +62,7 @@ public class TaskGrpcService {
         return taskStubHolder.get().solveTask(request).getSolution();
     }
 
-    public SolutionResponse getTaskSolution(String id) {
+    public TaskOuterClass.Solution getTaskSolution(String id) {
         var request = TaskGrpc.GetTaskSolutionRequest.newBuilder()
                 .setId(id)
                 .build();
@@ -71,7 +70,7 @@ public class TaskGrpcService {
         return taskStubHolder.get().getTaskSolution(request).getSolution();
     }
 
-    public List<SolutionResponse> getAllTaskSolutions(String taskId, String authorId) {
+    public List<TaskOuterClass.Solution> getAllTaskSolutions(String taskId, String authorId) {
         var request = TaskGrpc.GetAllTaskSolutionsRequest.newBuilder()
                 .setTaskId(taskId)
                 .setAuthorId(authorId)
@@ -80,7 +79,7 @@ public class TaskGrpcService {
         return taskStubHolder.get().getAllTaskSolutions(request).getSolutionList();
     }
 
-    public List<SolutionResponse> getUserSolutionStatistic(String authorId) {
+    public List<TaskOuterClass.Solution> getUserSolutionStatistic(String authorId) {
         var request = TaskGrpc.GetUserSolutionStatisticRequest.newBuilder()
                 .setAuthorId(authorId)
                 .build();

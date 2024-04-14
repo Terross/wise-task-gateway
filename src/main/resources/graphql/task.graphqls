@@ -132,7 +132,7 @@ type SolutionImplementation implements Solution {
     taskId: String!
     authorId: String!
     isCorrect: Boolean!
-    implementationResults: [ImplementationResult]!
+    implementationResult: [GraphResult]!
 }
 
 type PluginResult {
