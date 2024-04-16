@@ -15,6 +15,43 @@ service TaskService {
   rpc GetTaskSolution(GetTaskSolutionRequest) returns (GetTaskSolutionResponse);
   rpc GetAllTaskSolutions(GetAllTaskSolutionsRequest) returns (GetAllTaskSolutionsResponse);
   rpc GetUserSolutionStatistic(GetUserSolutionStatisticRequest) returns (GetUserSolutionStatisticResponse);
+  rpc CreateCatalog(CreateCatalogRequest) returns (CreateCatalogResponse);
+  rpc DeleteCatalog(DeleteCatalogRequest) returns (google.protobuf.Empty);
+  rpc UpdateCatalog(UpdateCatalogRequest) returns (UpdateCatalogResponse);
+  rpc GetCatalog(GetCatalogRequest) returns (GetCatalogResponse);
+  rpc GetAllCatalogs(google.protobuf.Empty) returns (GetAllCatalogsResponse);
+}
+
+message CreateCatalogRequest {
+  Catalog catalog = 1;
+}
+
+message CreateCatalogResponse {
+  Catalog catalog = 1;
+}
+
+message UpdateCatalogRequest {
+  Catalog catalog = 1;
+}
+
+message UpdateCatalogResponse {
+  Catalog catalog = 1;
+}
+
+message GetCatalogRequest {
+  string id = 1;
+}
+
+message DeleteCatalogRequest {
+  string id = 1;
+}
+
+message GetCatalogResponse {
+  Catalog catalog = 1;
+}
+
+message GetAllCatalogsResponse {
+  repeated Catalog catalog = 1;
 }
 
 message GetTaskRequest {
