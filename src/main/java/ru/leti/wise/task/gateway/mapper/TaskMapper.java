@@ -7,6 +7,7 @@ import ru.leti.wise.task.task.TaskOuterClass;
 import java.util.List;
 
 @Mapper(componentModel = "spring", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
+        collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
         uses = {GraphMapper.class, PluginMapper.class})
 public interface TaskMapper {
 

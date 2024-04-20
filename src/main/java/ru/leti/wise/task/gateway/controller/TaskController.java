@@ -2,7 +2,9 @@ package ru.leti.wise.task.gateway.controller;
 
 import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -35,57 +37,79 @@ public class TaskController implements GetTaskQueryResolver, GetAllTasksQueryRes
     }
 
     @Override
-    public List<Solution> getAllTaskSolutions(String userId, String taskId) {
+    @QueryMapping
+    @PreAuthorize("isAnonymous()")
+    public List<Solution> getAllTaskSolutions(@Argument String userId, @Argument String taskId) {
         return solutionMapper.toSolutions(taskGrpcService.getAllTaskSolutions(taskId, userId));
     }
 
     @Override
+    @QueryMapping
+    @PreAuthorize("isAnonymous()")
     public List<Task> getAllTasks() {
         return taskMapper.toTasks(taskGrpcService.getAllTasks());
     }
 
     @Override
-    public Task getTask(String id) {
+    @QueryMapping
+    @PreAuthorize("isAnonymous()")
+    public Task getTask(@Argument String id) {
         return taskMapper.toTask(taskGrpcService.getTask(id));
     }
 
     @Override
-    public Solution getTaskSolution(String id) {
+    @QueryMapping
+    @PreAuthorize("isAnonymous()")
+    public Solution getTaskSolution(@Argument String id) {
         return solutionMapper.toSolution(taskGrpcService.getTaskSolution(id));
     }
 
     @Override
-    public List<Solution> getUserSolutionStatistic(String userId) {
+    @QueryMapping
+    @PreAuthorize("isAnonymous()")
+    public List<Solution> getUserSolutionStatistic(@Argument String userId) {
         return solutionMapper.toSolutions(taskGrpcService.getUserSolutionStatistic(userId));
     }
 
     @Override
-    public TaskGraph createTaskGraph(TaskGraphInput task) {
+    @MutationMapping
+    @PreAuthorize("isAnonymous()")
+    public TaskGraph createTaskGraph(@Argument TaskGraphInput task) {
         return taskMapper.toTaskGraph(taskGrpcService.createTask(taskMapper.toTaskGraph(task)));
     }
 
     @Override
-    public TaskImplementation createTaskImplementation(TaskImplementationInput task) {
+    @MutationMapping
+    @PreAuthorize("isAnonymous()")
+    public TaskImplementation createTaskImplementation(@Argument TaskImplementationInput task) {
         return taskMapper.toTaskImplementation(taskGrpcService.createTask(taskMapper.toTaskImplementation(task)));
     }
 
     @Override
-    public TaskGraph updateTaskGraph(TaskGraphInput task) {
+    @MutationMapping
+    @PreAuthorize("isAnonymous()")
+    public TaskGraph updateTaskGraph(@Argument TaskGraphInput task) {
         return taskMapper.toTaskGraph(taskGrpcService.updateTask(taskMapper.toTaskGraph(task)));
     }
 
     @Override
-    public TaskImplementation updateTaskImplementation(TaskImplementationInput task) {
+    @MutationMapping
+    @PreAuthorize("isAnonymous()")
+    public TaskImplementation updateTaskImplementation(@Argument TaskImplementationInput task) {
         return taskMapper.toTaskImplementation(taskGrpcService.updateTask(taskMapper.toTaskImplementation(task)));
     }
 
     @Override
-    public SolutionGraph solveTaskGraph(SolutionGraphInput solution) {
+    @MutationMapping
+    @PreAuthorize("isAnonymous()")
+    public SolutionGraph solveTaskGraph(@Argument SolutionGraphInput solution) {
         return solutionMapper.toSolutionGraph(taskGrpcService.solveTask(solutionMapper.toSolutionGraph(solution)));
     }
 
     @Override
-    public SolutionImplementation solveTaskImplementation(SolutionImplementationInput solution) {
+    @MutationMapping
+    @PreAuthorize("isAnonymous()")
+    public SolutionImplementation solveTaskImplementation(@Argument SolutionImplementationInput solution) {
         return solutionMapper.toSolutionImplementation(taskGrpcService.solveTask(solutionMapper.toSolutionImplementation(solution)));
     }
 }
