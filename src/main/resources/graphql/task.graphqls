@@ -16,10 +16,11 @@ input PluginInfoInput {
     mistakeText: String
     sign: String
     pluginType: PluginType!
+    order: Int!
 }
 
 input TaskGraphInput {
-    id: ID!
+    id: ID
     name: String!
     description: String!
     category: String!

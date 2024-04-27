@@ -22,8 +22,8 @@ input GraphInput {
 
 input VertexInput {
     id: Int!
-    weight: Int!
-    label: String!
+    weight: Int
+    label: String
     xCoordinate: Int!
     yCoordinate: Int!
     color: Color!
@@ -32,8 +32,8 @@ input VertexInput {
 input EdgeInput {
     source: Int!
     target: Int!
-    weight: Int!
-    label: String!
+    weight: Int
+    label: String
     color: Color!
 }
 

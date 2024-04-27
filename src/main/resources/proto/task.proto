@@ -42,6 +42,7 @@ message PluginInfo {
   string mistake_text = 3;
   string sign = 4;
   PluginType plugin_type = 5;
+  int32 order = 6;
 }
 
 message Rule {

@@ -76,7 +76,7 @@ message CheckPluginSolutionResponse {
 }
 
 //CheckPluginImplementation
-message CheckPluginImplementationRequest {
+message  CheckPluginImplementationRequest {
   string id = 1;
   string file = 2;
 }
