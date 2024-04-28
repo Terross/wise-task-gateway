@@ -141,6 +141,7 @@ type PluginResult {
     isCorrect: Boolean!
     value: String!
     trueValue: String!
+    pluginMessage: String!
 }
 
 type GraphResult {

@@ -9,8 +9,11 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import ru.leti.graphql.model.*;
+import ru.leti.wise.task.gateway.mapper.GraphMapper;
 import ru.leti.wise.task.gateway.mapper.SolutionMapper;
 import ru.leti.wise.task.gateway.mapper.TaskMapper;
+import ru.leti.wise.task.gateway.service.TaskService;
+import ru.leti.wise.task.gateway.service.grpc.graph.GraphGrpcService;
 import ru.leti.wise.task.gateway.service.grpc.task.TaskGrpcService;
 
 import java.util.List;
@@ -26,7 +29,7 @@ public class TaskController implements GetTaskQueryResolver, GetAllTasksQueryRes
     private final TaskMapper taskMapper;
     private final SolutionMapper solutionMapper;
     private final TaskGrpcService taskGrpcService;
-
+    private final TaskService taskService;
 
     @Override
     @QueryMapping
@@ -61,7 +64,11 @@ public class TaskController implements GetTaskQueryResolver, GetAllTasksQueryRes
     @QueryMapping
     @PreAuthorize("isAnonymous()")
     public Solution getTaskSolution(@Argument String id) {
-        return solutionMapper.toSolution(taskGrpcService.getTaskSolution(id));
+        var solution = taskGrpcService.getTaskSolution(id);
+        if (solution.hasSolutionGraph()) {
+            return taskService.buildSolutionWithGraph(solution);
+        }
+        return solutionMapper.toSolution(solution);
     }
 
     @Override

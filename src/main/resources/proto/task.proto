@@ -82,6 +82,7 @@ message PluginResult {
   bool is_correct = 2;
   string value = 3;
   string true_value = 4;
+  string pluginMessage = 5;
 }
 
 message SolutionImplementation {
