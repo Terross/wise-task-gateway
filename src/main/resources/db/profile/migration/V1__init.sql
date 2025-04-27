@@ -13,4 +13,11 @@ CREATE TABLE wise_task_profile.profile
     student_course   INT
 );
 
+CREATE TABLE wise_task_profile.password_recovery
+(
+    recovery_token UUID NOT NULL PRIMARY KEY,
+    email VARCHAR NOT NULL,
+    expires_at TIMESTAMP NOT NULL
+);
+
 CREATE UNIQUE INDEX email_uk ON wise_task_profile.profile (email)

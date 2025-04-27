@@ -10,6 +10,21 @@ volumes:
   druid_shared: {}
 
 services:
+
+  smtp:
+    image: boky/postfix
+    container_name: smtp-server
+    restart: unless-stopped
+    ports:
+      - "25:25"
+    environment:
+      - SMTP_SERVER_HOSTNAME=localhost
+      - SMTP_SERVER_DOMAIN=wisetask.ru
+      - RELAY_NETWORKS=0.0.0.0/0
+      - ALLOWED_SENDER_DOMAINS=wisetask.ru
+      - LOG_TO_STDOUT=1
+    hostname: mail
+
   wise-task-graph:
     image: ghcr.io/terross/wise-task-graph:main
     depends_on:

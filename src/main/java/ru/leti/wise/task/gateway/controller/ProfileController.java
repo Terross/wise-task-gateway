@@ -20,7 +20,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class ProfileController implements GetAllProfilesQueryResolver, SignUpMutationResolver, SignInMutationResolver,
-GetProfileQueryResolver, UpdateProfileMutationResolver, DeleteProfileMutationResolver {
+GetProfileQueryResolver, UpdateProfileMutationResolver, DeleteProfileMutationResolver, ChangePasswordMutationResolver, ResetPasswordMutationResolver, SendResetPasswordEmailMutationResolver {
 
     private final ProfileGrpcService profileGrpcService;
     private final ProfileMapper profileMapper;
@@ -45,6 +45,29 @@ GetProfileQueryResolver, UpdateProfileMutationResolver, DeleteProfileMutationRes
     @PreAuthorize("isAnonymous()")
     public Token signUp(@Argument SignUpRequest signUpRequest) {
         return securityService.signUp(signUpRequest);
+    }
+
+    @Override
+    @MutationMapping
+    @PreAuthorize("isAnonymous()")
+    public String sendResetPasswordEmail(@Argument String email){
+        profileGrpcService.sendResetPasswordEmail(email);
+        return email;
+    }
+
+    @Override
+    @MutationMapping
+    @PreAuthorize("isAnonymous()")
+    public Token resetPassword(@Argument ResetPasswordRequest resetPasswordRequest){
+        return securityService.resetPassword(resetPasswordRequest);
+    }
+
+    @Override
+    @MutationMapping
+    @PreAuthorize("isAnonymous()")
+    public String changePassword(@Argument String id, @Argument String oldPassword, @Argument String newPassword){
+        profileGrpcService.changePassword(id,oldPassword,newPassword);
+        return id;
     }
 
     @Override

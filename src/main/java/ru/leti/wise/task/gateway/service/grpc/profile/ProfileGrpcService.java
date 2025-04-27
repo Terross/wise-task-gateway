@@ -71,4 +71,32 @@ public class ProfileGrpcService {
 
         return profileStubHolder.get().signUp(request).getProfile();
     }
+
+    public Profile resetPassword(String recoveryToken, String newPassword) {
+        var request = ProfileGrpc.ResetPasswordRequest.newBuilder()
+                .setRecoveryToken(recoveryToken)
+                .setNewPassword(newPassword)
+                .build();
+
+        return profileStubHolder.get().resetPassword(request).getProfile();
+    }
+
+    public void sendResetPasswordEmail(String email) {
+        var request = ProfileGrpc.SendResetPasswordEmailRequest.newBuilder()
+                .setEmail(email)
+                .build();
+
+        profileStubHolder.get().sendResetPasswordEmail(request);
+    }
+
+    public void changePassword(String id, String oldPassword, String newPassword) {
+        var request = ProfileGrpc.ChangePasswordRequest.newBuilder().setProfileId(id)
+                .setOldPassword(oldPassword)
+                .setNewPassword(newPassword)
+                .build();
+
+        profileStubHolder.get().changePassword(request);
+    }
+
+
 }
