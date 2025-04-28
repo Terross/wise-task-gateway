@@ -2,6 +2,7 @@ package ru.leti.wise.task.gateway.security.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.leti.graphql.model.ResetPasswordRequest;
 import ru.leti.graphql.model.SignInRequest;
 import ru.leti.graphql.model.SignUpRequest;
 import ru.leti.graphql.model.Token;
@@ -27,6 +28,14 @@ public class SecurityService {
 
     public Token signUp(SignUpRequest request) {
         var profile = profileGrpcService.signUp(profileMapper.toProfile(request.getProfile()));
+        UserDetailsImpl userDetails = new UserDetailsImpl(profileMapper.toProfile(profile));
+        return Token.builder()
+                .setToken(jwtUtils.generateJwtToken(userDetails))
+                .build();
+    }
+
+    public Token resetPassword(ResetPasswordRequest request){
+        var profile = profileGrpcService.resetPassword(request.getRecoveryToken(), request.getNewPassword());
         UserDetailsImpl userDetails = new UserDetailsImpl(profileMapper.toProfile(profile));
         return Token.builder()
                 .setToken(jwtUtils.generateJwtToken(userDetails))

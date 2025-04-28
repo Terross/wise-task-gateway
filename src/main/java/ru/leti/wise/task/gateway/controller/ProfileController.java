@@ -20,7 +20,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class ProfileController implements GetAllProfilesQueryResolver, SignUpMutationResolver, SignInMutationResolver,
-GetProfileQueryResolver, UpdateProfileMutationResolver, DeleteProfileMutationResolver {
+GetProfileQueryResolver, UpdateProfileMutationResolver, DeleteProfileMutationResolver, ChangePasswordMutationResolver, ResetPasswordMutationResolver, SendResetPasswordEmailMutationResolver {
 
     private final ProfileGrpcService profileGrpcService;
     private final ProfileMapper profileMapper;
@@ -28,7 +28,7 @@ GetProfileQueryResolver, UpdateProfileMutationResolver, DeleteProfileMutationRes
 
     @Override
     @QueryMapping
-    @PreAuthorize("isAnonymous()")
+    @PreAuthorize("hasAnyRole(\"STUDENT\",\"CAPTAIN\",\"TEACHER\",\"ADMIN\")")
     public List<Profile> getAllProfiles() {
         return profileMapper.toProfiles(profileGrpcService.getAllProfiles());
     }
@@ -48,22 +48,45 @@ GetProfileQueryResolver, UpdateProfileMutationResolver, DeleteProfileMutationRes
     }
 
     @Override
-    @QueryMapping
+    @MutationMapping
     @PreAuthorize("isAnonymous()")
+    public String sendResetPasswordEmail(@Argument String email){
+        profileGrpcService.sendResetPasswordEmail(email);
+        return email;
+    }
+
+    @Override
+    @MutationMapping
+    @PreAuthorize("isAnonymous()")
+    public Token resetPassword(@Argument ResetPasswordRequest resetPasswordRequest){
+        return securityService.resetPassword(resetPasswordRequest);
+    }
+
+    @Override
+    @MutationMapping
+    @PreAuthorize("authentication.principal.profile.id.equals(#id)")
+    public String changePassword(@Argument String id, @Argument String oldPassword, @Argument String newPassword){
+        profileGrpcService.changePassword(id,oldPassword,newPassword);
+        return id;
+    }
+
+    @Override
+    @QueryMapping
+    @PreAuthorize("hasAnyRole(\"STUDENT\",\"CAPTAIN\",\"TEACHER\",\"ADMIN\")")
     public Profile getProfile(@Argument String id) {
         return profileMapper.toProfile(profileGrpcService.getProfile(id));
     }
 
     @Override
     @MutationMapping
-    @PreAuthorize("isAnonymous()")
+    @PreAuthorize("authentication.principal.profile.id.equals(#profile.id)")
     public Profile updateProfile(@Argument ProfileInput profile) {
         return profileMapper.toProfile(profileGrpcService.updateProfile(profileMapper.toProfile(profile)));
     }
 
     @Override
     @MutationMapping
-    @PreAuthorize("isAnonymous()")
+    @PreAuthorize("authentication.principal.profile.id.equals(#id)")
     public String deleteProfile(@Argument String id) {
         profileGrpcService.deleteProfile(id);
         return id;

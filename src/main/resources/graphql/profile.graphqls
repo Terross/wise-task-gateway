@@ -7,6 +7,12 @@ input SignUpRequest {
     profile: ProfileInput!
 }
 
+
+input ResetPasswordRequest {
+    recoveryToken: String!
+    newPassword: String!
+}
+
 input ProfileInput {
     id : ID
     email: String!
