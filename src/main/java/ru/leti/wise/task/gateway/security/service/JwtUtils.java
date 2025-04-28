@@ -43,8 +43,10 @@ public class JwtUtils {
     }
 
     public String getUserNameFromJwtToken(String token) {
-        return Jwts.parser().setSigningKey(key())
-                .parseClaimsJws(token).getBody().getSubject();
+        Claims claims = Jwts.parser().setSigningKey(key())
+                .parseClaimsJws(token).getBody();
+
+        return claims.get("email", String.class);
     }
 
     public boolean validateJwtToken(String authToken) {
