@@ -23,21 +23,21 @@ public class GraphController implements CreateGraphMutationResolver, GenerateGra
     private final GraphGrpcService graphGrpcService;
 
     @Override
-    @PreAuthorize("isAnonymous()")
+    @PreAuthorize("hasAnyRole(\"STUDENT\",\"CAPTAIN\",\"TEACHER\",\"ADMIN\")")
     @MutationMapping
     public Graph createGraph(@Argument GraphInput graph) {
         return graphMapper.toGraph(graphGrpcService.createGraph(graph));
     }
 
     @Override
-    @PreAuthorize("isAnonymous()")
+    @PreAuthorize("hasAnyRole(\"STUDENT\",\"CAPTAIN\",\"TEACHER\",\"ADMIN\")")
     @MutationMapping
     public Graph generateGraph(@Argument GenerateGraphRequest generateGraphRequest) {
         return graphMapper.toGraph(graphGrpcService.generateGraph(generateGraphRequest));
     }
 
     @Override
-    @PreAuthorize("isAnonymous()")
+    @PreAuthorize("hasAnyRole(\"STUDENT\",\"CAPTAIN\",\"TEACHER\",\"ADMIN\")")
     @QueryMapping
     public Graph getGraphById(@Argument String id) {
         return graphMapper.toGraph(graphGrpcService.getGraphById(id));
@@ -45,14 +45,14 @@ public class GraphController implements CreateGraphMutationResolver, GenerateGra
 
 
     @Override
-    @PreAuthorize("isAnonymous()")
+    @PreAuthorize("hasAnyRole(\"STUDENT\",\"CAPTAIN\",\"TEACHER\",\"ADMIN\")")
     @QueryMapping
     public List<Graph> getGraphLibrary() {
         return graphMapper.toGraphs(graphGrpcService.getGraphLibrary());
     }
 
     @Override
-    @PreAuthorize("isAnonymous()")
+    @PreAuthorize("hasAnyRole(\"STUDENT\",\"CAPTAIN\",\"TEACHER\",\"ADMIN\")")
     @MutationMapping
     public String deleteGraph(@Argument String id) {
         return graphGrpcService.deleteGraph(id);
