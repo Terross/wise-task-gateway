@@ -75,6 +75,12 @@ message Solution {
 message SolutionGraph {
   ru.leti.wise.task.graph.Graph graph = 1;
   repeated PluginResult plugin_results = 2;
+  repeated PluginStringInput plugin_string_result = 3;
+}
+
+message PluginStringInput {
+  string plugin_id = 1;
+  string hand_written_answer = 2;
 }
 
 message PluginResult {

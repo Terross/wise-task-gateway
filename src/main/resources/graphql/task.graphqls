@@ -96,11 +96,17 @@ type TaskImplementation implements Task {
 }
 # ---------------------------------------------------------------------------------
 
+input PluginStringInput {
+    key: String!
+    value: String!
+}
+
 input SolutionGraphInput {
     id: ID!
     taskId: String!
     authorId: String!
     graph: GraphInput!
+    pluginsInput: [PluginStringInput!]
 }
 
 input SolutionImplementationInput {
