@@ -24,6 +24,11 @@ public class PluginGrpcService {
     private final GraphMapper graphMapper;
     private final PluginMapper pluginMapper;
 
+    public boolean isOwnerPlugin(String userId, String pluginId) {
+        var request = PluginGrpc.IsOwnerPluginRequest.newBuilder().setUserId(userId).setPluginId(pluginId).build();
+        return pluginStubHolder.get().isOwnerPlugin(request).getResult();
+    }
+
     public PluginOuterClass.ImplementationResult checkPluginImplementation(String id, String file) {
         var request = PluginGrpc.CheckPluginImplementationRequest.newBuilder()
                 .setId(id)
