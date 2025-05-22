@@ -24,14 +24,16 @@ public class PluginController implements GetAllPluginsQueryResolver, GetPluginQu
     private final PluginMapper pluginMapper;
 
     @Override
-    @PreAuthorize("pluginGrpcService.isOwnerPlugin(authentication.principal.profile.id,#id) or hasAnyRole(\"TEACHER\",\"ADMIN\")")
+    @PreAuthorize("hasAnyRole(\"STUDENT\",\"CAPTAIN\",\"TEACHER\",\"ADMIN\")")
+//    @PreAuthorize("pluginGrpcService.isOwnerPlugin(authentication.principal.profile.id,#id) or hasAnyRole(\"TEACHER\",\"ADMIN\")")
     @MutationMapping
     public ImplementationResult checkPluginImplementation(@Argument String id, @Argument String file) {
         return pluginMapper.toImplementationResult(pluginGrpcService.checkPluginImplementation(id, file));
     }
 
     @Override
-    @PreAuthorize("pluginGrpcService.isOwnerPlugin(authentication.principal.profile.id,#id) or hasAnyRole(\"TEACHER\",\"ADMIN\")")
+    @PreAuthorize("hasAnyRole(\"STUDENT\",\"CAPTAIN\",\"TEACHER\",\"ADMIN\")")
+//    @PreAuthorize("pluginGrpcService.isOwnerPlugin(authentication.principal.profile.id,#id) or hasAnyRole(\"TEACHER\",\"ADMIN\")")
     @MutationMapping
     public String checkPluginSolution(@Argument SolutionInput solution) {
         return pluginGrpcService.checkPluginSolution(solution);
@@ -45,7 +47,8 @@ public class PluginController implements GetAllPluginsQueryResolver, GetPluginQu
     }
 
     @Override
-    @PreAuthorize("pluginGrpcService.isOwnerPlugin(authentication.principal.profile.id,#id) or hasAnyRole(\"TEACHER\",\"ADMIN\")")
+    @PreAuthorize("hasAnyRole(\"TEACHER\",\"ADMIN\")")
+//    @PreAuthorize("pluginGrpcService.isOwnerPlugin(authentication.principal.profile.id,#id) or hasAnyRole(\"TEACHER\",\"ADMIN\")")
     @MutationMapping
     public String deletePlugin(@Argument String id) {
         return pluginGrpcService.deletePlugin(id);
@@ -66,14 +69,16 @@ public class PluginController implements GetAllPluginsQueryResolver, GetPluginQu
     }
 
     @Override
-    @PreAuthorize("pluginGrpcService.isOwnerPlugin(authentication.principal.profile.id,#id) or hasAnyRole(\"TEACHER\",\"ADMIN\")")
+    @PreAuthorize("hasAnyRole(\"STUDENT\",\"CAPTAIN\",\"TEACHER\",\"ADMIN\")")
+//    @PreAuthorize("pluginGrpcService.isOwnerPlugin(authentication.principal.profile.id,#id) or hasAnyRole(\"TEACHER\",\"ADMIN\")")
     @MutationMapping
     public Plugin updatePlugin(@Argument PluginInput plugin) {
         return pluginMapper.toPlugin(pluginGrpcService.updatePlugin(plugin));
     }
 
     @Override
-    @PreAuthorize("pluginGrpcService.isOwnerPlugin(authentication.principal.profile.id,#id) or hasAnyRole(\"TEACHER\",\"ADMIN\")")
+    @PreAuthorize("hasAnyRole(\"TEACHER\",\"ADMIN\")")
+//    @PreAuthorize("pluginGrpcService.isOwnerPlugin(authentication.principal.profile.id,#id) or hasAnyRole(\"TEACHER\",\"ADMIN\")")
     @MutationMapping
     public String validatePlugin(@Argument String id) {
         return pluginGrpcService.validatePlugin(id);

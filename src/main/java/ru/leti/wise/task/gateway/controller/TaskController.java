@@ -30,6 +30,8 @@ public class TaskController implements GetTaskQueryResolver, GetAllTasksQueryRes
     private final SolutionMapper solutionMapper;
     private final TaskGrpcService taskGrpcService;
     private final TaskService taskService;
+    private final GraphGrpcService graphGrpcService;
+    private final GraphMapper graphMapper;
 
     @Override
     @QueryMapping
@@ -57,7 +59,13 @@ public class TaskController implements GetTaskQueryResolver, GetAllTasksQueryRes
     @QueryMapping
     @PreAuthorize("hasAnyRole(\"STUDENT\",\"CAPTAIN\",\"TEACHER\",\"ADMIN\")")
     public Task getTask(@Argument String id) {
-        return taskMapper.toTask(taskGrpcService.getTask(id));
+        var taskResponse = taskGrpcService.getTask(id);
+        var taskGraph = taskMapper.toTaskGraph(taskResponse);
+        if (taskGraph.getGraph().getId() != null) {
+            taskGraph.setGraph(graphMapper.toGraph(graphGrpcService.getGraphById(taskGraph.getGraph().getId())));
+            return taskGraph;
+        }
+        return taskMapper.toTaskImplementation(taskResponse);
     }
 
     @Override
