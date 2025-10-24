@@ -28,7 +28,7 @@ GetProfileQueryResolver, UpdateProfileMutationResolver, DeleteProfileMutationRes
 
     @Override
     @QueryMapping
-    @PreAuthorize("hasAnyRole(\"STUDENT\",\"CAPTAIN\",\"TEACHER\",\"ADMIN\")")
+    @PreAuthorize("hasAnyRole(\"ROLE_USER\",\"ROLE_AUTHOR\",\"ROLE_ADMIN\")")
     public List<Profile> getAllProfiles() {
         return profileMapper.toProfiles(profileGrpcService.getAllProfiles());
     }
@@ -64,7 +64,7 @@ GetProfileQueryResolver, UpdateProfileMutationResolver, DeleteProfileMutationRes
 
     @Override
     @MutationMapping
-    @PreAuthorize("authentication.principal.profile.id.equals(#id)")
+    @PreAuthorize("authentication.principal.profile.id.equals(#id) or hasRole(\"ROLE_ADMIN\")")
     public String changePassword(@Argument String id, @Argument String oldPassword, @Argument String newPassword){
         profileGrpcService.changePassword(id,oldPassword,newPassword);
         return id;
@@ -72,21 +72,21 @@ GetProfileQueryResolver, UpdateProfileMutationResolver, DeleteProfileMutationRes
 
     @Override
     @QueryMapping
-    @PreAuthorize("hasAnyRole(\"STUDENT\",\"CAPTAIN\",\"TEACHER\",\"ADMIN\")")
+    @PreAuthorize("hasAnyRole(\"ROLE_USER\",\"ROLE_AUTHOR\",\"ROLE_ADMIN\")")
     public Profile getProfile(@Argument String id) {
         return profileMapper.toProfile(profileGrpcService.getProfile(id));
     }
 
     @Override
     @MutationMapping
-    @PreAuthorize("authentication.principal.profile.id.equals(#profile.id)")
+    @PreAuthorize("authentication.principal.profile.id.equals(#profile.id) or hasRole(\"ROLE_ADMIN\")")
     public Profile updateProfile(@Argument ProfileInput profile) {
         return profileMapper.toProfile(profileGrpcService.updateProfile(profileMapper.toProfile(profile)));
     }
 
     @Override
     @MutationMapping
-    @PreAuthorize("authentication.principal.profile.id.equals(#id)")
+    @PreAuthorize("authentication.principal.profile.id.equals(#id) or hasRole(\"ROLE_ADMIN\")")
     public String deleteProfile(@Argument String id) {
         profileGrpcService.deleteProfile(id);
         return id;
