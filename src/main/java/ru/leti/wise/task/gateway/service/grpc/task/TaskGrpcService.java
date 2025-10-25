@@ -17,6 +17,10 @@ public class TaskGrpcService {
 
     private final TaskStubHolder taskStubHolder;
 
+    public boolean isOwnerTask(String userId, String taskId){
+        return true;
+    }
+
     public Task getTask(String id) {
         var request = TaskGrpc.GetTaskRequest.newBuilder()
                 .setId(id)
