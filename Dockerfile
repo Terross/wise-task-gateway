@@ -6,7 +6,7 @@ ARG TOKEN
 
 RUN USERNAME=$USERNAME TOKEN=$TOKEN gradle build --no-daemon
 
-FROM openjdk:17
+FROM eclipse-temurin:17-jre
 
 EXPOSE 8084
 

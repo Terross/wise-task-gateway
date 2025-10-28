@@ -1,12 +1,14 @@
 server:
   http_listen_port: 3200
+  http_listen_address: 0.0.0.0
 
 distributor:
   receivers:
     zipkin:
+      endpoint: 0.0.0.0:9411
 
 storage:
   trace:
     backend: local
     local:
-      path: /tmp/tempo/blocks
+      path: /tmp/tempo
