@@ -1,3 +1,0 @@
-FROM postgres:15-alpine
-COPY init-scripts/init.sql /docker-entrypoint-initdb.d/
-CMD ["postgres"]

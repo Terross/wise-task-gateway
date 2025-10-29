@@ -10,19 +10,17 @@ volumes:
 
 services:
   wise-task-db:
-    build:
-      context: ./postgres
-      dockerfile: Dockerfile
-      tags: ['wise-task-db']
-    image: 'wise-task-db'
+    image: postgres:15-alpine
     container_name: wise-task-db
     environment:
-      - 'POSTGRES_PASSWORD=wise-task'
-      - 'POSTGRES_USER=wise-task'
+      - POSTGRES_PASSWORD=wise-task
+      - POSTGRES_USER=wise-task
+      - POSTGRES_DB=wise-task
     ports:
       - "5432:5432"
     volumes:
       - wise-task-db:/var/lib/postgresql/data
+      - ./docker/postgres/init-scripts:/docker-entrypoint-initdb.d
 
   wise-task-graph:
     build:
