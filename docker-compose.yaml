@@ -7,10 +7,11 @@ volumes:
   router_var: {}
   druid_shared: {}
   wise-task-db: {}
+  wise-task-mongo: {}
 
 services:
   wise-task-db:
-    image: postgres:15-alpine
+    image: postgres:17-alpine
     container_name: wise-task-db
     environment:
       - POSTGRES_PASSWORD=wise-task
@@ -21,6 +22,14 @@ services:
     volumes:
       - wise-task-db:/var/lib/postgresql/data
       - ./docker/postgres/init-scripts:/docker-entrypoint-initdb.d
+
+  wise-task-mongo:
+    image: mongo:latest
+    container_name: wise-task-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - wise-task-mongo:/var/lib/mongodb/data
 
   wise-task-graph:
     build:
@@ -148,12 +157,6 @@ services:
       - SPRING_PROFILES_ACTIVE=prod
       - LOKI_HOST=loki
       - TEMPO_HOST=tempo
-
-  wise-task-mongo:
-    image: mongo:latest
-    container_name: wise-task-mongo
-    ports:
-      - "27017:27017"
 
   tempo:
     image: grafana/tempo
