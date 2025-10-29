@@ -17,10 +17,24 @@ grpc:
       port: 6568
 server:
   port: 8084
-
-jwt:
-  secret: ======================wise=task=secret===========================
-  expiration: 100000000
+security:
+  jwt:
+    secret: ======================wise=task=secret===========================
+    expiration: 100000000
+  cors:
+    allowed-origins:
+      - "http://localhost:5173"
+      - "http://localhost:3000"
+    allowed-methods:
+      - "GET"
+      - "POST"
+      - "PUT"
+      - "DELETE"
+      - "OPTIONS"
+    allowed-headers:
+      - "*"
+    allow-credentials: true
+    max-age: 3600
 
 logging:
   pattern:

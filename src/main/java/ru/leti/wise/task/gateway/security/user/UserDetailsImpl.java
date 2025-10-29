@@ -21,7 +21,7 @@ public class UserDetailsImpl implements UserDetails {
     public UserDetailsImpl(Profile profile) {
         this.profile = profile;
         this.username = profile.getEmail();
-        this.authorities = List.of(new SimpleGrantedAuthority("ROLE_" + profile.getProfileRole().name()));
+        this.authorities = List.of(new SimpleGrantedAuthority(profile.getProfileRole().name()));
     }
 
     @Override
