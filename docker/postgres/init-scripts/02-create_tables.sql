@@ -107,7 +107,7 @@ alter table if exists task_implementation
     foreign key (id)
     references task;
 
-/c wise_task_plugin
+\c wise_task_plugin
 create table plugin (
                         id uuid not null,
                         author_id uuid,
