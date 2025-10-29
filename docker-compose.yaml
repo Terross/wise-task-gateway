@@ -40,6 +40,7 @@ services:
       args:
         - USERNAME=${USERNAME}
         - TOKEN=${TOKEN}
+      network: host
     image: 'wise-task-graph'
     depends_on:
       - wise-task-mongo
@@ -62,6 +63,7 @@ services:
         - TOKEN=${TOKEN}
       tags:
         - 'wise-task-plugin'
+      network: host
     image: 'wise-task-plugin'
     depends_on:
       - wise-task-db
@@ -85,6 +87,7 @@ services:
         - TOKEN=${TOKEN}
       tags:
         - 'wise-task-profile'
+      network: host
     image: 'wise-task-profile'
     depends_on:
       - wise-task-db
@@ -106,6 +109,7 @@ services:
         - TOKEN=${TOKEN}
       tags:
         - 'wise-task-task'
+      network: host
     image: 'wise-task-task'
     depends_on:
       - wise-task-db
@@ -129,6 +133,7 @@ services:
         - TOKEN=${TOKEN}
       tags:
         - 'wise-task-gateway'
+      network: host
     image: 'wise-task-gateway'
     depends_on:
       - wise-task-profile
@@ -149,6 +154,7 @@ services:
       dockerfile: Dockerfile
       tags:
         - 'wise-task-event-adapter'
+      network: host
     image: 'wise-task-event-adapter'
     container_name: wise-task-event-adapter
     ports:
