@@ -1,5 +1,3 @@
-version: '3.7'
-
 volumes:
   metadata_data: {}
   middle_var: {}
@@ -8,25 +6,42 @@ volumes:
   coordinator_var: {}
   router_var: {}
   druid_shared: {}
+  wise-task-db: {}
+  wise-task-mongo: {}
 
 services:
-
-  smtp:
-    image: boky/postfix
-    container_name: smtp-server
-    restart: unless-stopped
-    ports:
-      - "25:25"
+  wise-task-db:
+    image: postgres:17-alpine
+    container_name: wise-task-db
     environment:
-      - SMTP_SERVER_HOSTNAME=localhost
-      - SMTP_SERVER_DOMAIN=wisetask.ru
-      - RELAY_NETWORKS=0.0.0.0/0
-      - ALLOWED_SENDER_DOMAINS=wisetask.ru
-      - LOG_TO_STDOUT=1
-    hostname: mail
+      - POSTGRES_PASSWORD=wise-task
+      - POSTGRES_USER=wise-task
+      - POSTGRES_DB=wise-task
+    ports:
+      - "5432:5432"
+    volumes:
+      - wise-task-db:/var/lib/postgresql/data
+      - ./docker/postgres/init-scripts:/docker-entrypoint-initdb.d
+
+  wise-task-mongo:
+    image: mongo:latest
+    container_name: wise-task-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - wise-task-mongo:/var/lib/mongodb/data
 
   wise-task-graph:
-    image: ghcr.io/terross/wise-task-graph:main
+    build:
+      context: ../wise-task-graph
+      dockerfile: Dockerfile
+      tags:
+        - 'wise-task-graph'
+      args:
+        - USERNAME=${USERNAME}
+        - TOKEN=${TOKEN}
+      network: host
+    image: 'wise-task-graph'
     depends_on:
       - wise-task-mongo
     container_name: wise-task-graph
@@ -34,12 +49,22 @@ services:
       - "6565:6565"
       - "8080:8080"
     environment:
+      - MANAGEMENT_METRICS_ENABLE_PROCESS=false
       - SPRING_PROFILES_ACTIVE=prod
       - LOKI_HOST=loki
       - TEMPO_HOST=tempo
 
   wise-task-plugin:
-    image: ghcr.io/terross/wise-task-plugin:main
+    build:
+      context: ../wise-task-plugin
+      dockerfile: Dockerfile
+      args:
+        - USERNAME=${USERNAME}
+        - TOKEN=${TOKEN}
+      tags:
+        - 'wise-task-plugin'
+      network: host
+    image: 'wise-task-plugin'
     depends_on:
       - wise-task-db
       - wise-task-graph
@@ -48,12 +73,22 @@ services:
       - "6566:6566"
       - "8081:8081"
     environment:
+      - MANAGEMENT_METRICS_ENABLE_PROCESS=false
       - SPRING_PROFILES_ACTIVE=prod
       - LOKI_HOST=loki
       - TEMPO_HOST=tempo
 
   wise-task-profile:
-    image: ghcr.io/terross/wise-task-profile:main
+    build:
+      context: ../wise-task-profile
+      dockerfile: Dockerfile
+      args:
+        - USERNAME=${USERNAME}
+        - TOKEN=${TOKEN}
+      tags:
+        - 'wise-task-profile'
+      network: host
+    image: 'wise-task-profile'
     depends_on:
       - wise-task-db
     container_name: wise-task-profile
@@ -66,7 +101,16 @@ services:
       - TEMPO_HOST=tempo
 
   wise-task-task:
-    image: ghcr.io/terross/wise-task-task:main
+    build:
+      context: ../wise-task-task
+      dockerfile: Dockerfile
+      args:
+        - USERNAME=${USERNAME}
+        - TOKEN=${TOKEN}
+      tags:
+        - 'wise-task-task'
+      network: host
+    image: 'wise-task-task'
     depends_on:
       - wise-task-db
       - wise-task-graph
@@ -81,12 +125,21 @@ services:
       - TEMPO_HOST=tempo
 
   wise-task-gateway:
-    image: ghcr.io/terross/wise-task-gateway:main
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - USERNAME=${USERNAME}
+        - TOKEN=${TOKEN}
+      tags:
+        - 'wise-task-gateway'
+      network: host
+    image: 'wise-task-gateway'
     depends_on:
-      - wise-task-plugin
       - wise-task-profile
-      - wise-task-graph
       - wise-task-task
+      - wise-task-plugin
+      - wise-task-graph
     container_name: wise-task-gateway
     ports:
       - "8084:8084"
@@ -96,7 +149,13 @@ services:
       - TEMPO_HOST=tempo
 
   wise-task-event-adapter:
-    image: ghcr.io/terross/wise-task-event-adapter:main
+    build:
+      context: ../wise-task-event-adapter
+      dockerfile: Dockerfile
+      tags:
+        - 'wise-task-event-adapter'
+      network: host
+    image: 'wise-task-event-adapter'
     container_name: wise-task-event-adapter
     ports:
       - "8085:8085"
@@ -105,21 +164,6 @@ services:
       - LOKI_HOST=loki
       - TEMPO_HOST=tempo
 
-  wise-task-mongo:
-    image: mongo:latest
-    container_name: wise-task-mongo
-    ports:
-      - "27017:27017"
-
-  wise-task-db:
-    image: postgres:13.1-alpine
-    container_name: wise-task-db
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER=wise_task
-      - POSTGRES_PASSWORD=wise_task
-
   tempo:
     image: grafana/tempo
     command: [ "-config.file=/etc/tempo.yaml" ]
@@ -127,9 +171,9 @@ services:
       - ./docker/tempo/tempo-local.yml:/etc/tempo.yaml
       - ./docker/tempo/tempo-data:/tmp/tempo
     ports:
-      - "14268"  # jaeger ingest
-      - "9411:9411" # zipkin
-
+      - "3200:3200"
+      - "9411:9411"  # Zipkin
+      - "14268:14268" # Jaeger ingest
   loki:
     image: grafana/loki
     command: [ "-config.file=/etc/loki/local-config.yaml" ]
@@ -154,6 +198,20 @@ services:
     ports:
       - "9090:9090"
 
+  smtp:
+    image: boky/postfix
+    container_name: smtp-server
+    restart: unless-stopped
+    ports:
+      - "25:25"
+    environment:
+      - SMTP_SERVER_HOSTNAME=localhost
+      - SMTP_SERVER_DOMAIN=wisetask.ru
+      - RELAY_NETWORKS=0.0.0.0/0
+      - ALLOWED_SENDER_DOMAINS=wisetask.ru
+      - LOG_TO_STDOUT=1
+    hostname: mail
+
   grafana:
     image: grafana/grafana
     volumes:
@@ -174,131 +232,3 @@ services:
       - prometheus
     ports:
       - "3000:3000"
-#
-#  zookeeper:
-#    image: confluentinc/cp-zookeeper:latest
-#    environment:
-#      ZOOKEEPER_CLIENT_PORT: 2181
-#      ZOOKEEPER_TICK_TIME: 2000
-#    ports:
-#      - 22181:2181
-#
-#  kafka:
-#    image: confluentinc/cp-kafka:latest
-#    depends_on:
-#      - zookeeper
-#    ports:
-#      - 29092:29092
-#    environment:
-#      KAFKA_BROKER_ID: 1
-#      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
-#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-#      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-#
-#  kafka-ui:
-#    image: provectuslabs/kafka-ui:latest
-#    depends_on:
-#      - kafka
-#    ports:
-#      - 8180:8080
-#    environment:
-#      KAFKA_CLUSTERS_0_NAME: local
-#      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
-#      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
-#
-#  druid-postgres:
-#    container_name: druid-postgres
-#    image: postgres:latest
-#    ports:
-#      - "5444:5432"
-#    volumes:
-#      - metadata_data:/var/lib/postgresql/data
-#    environment:
-#      - POSTGRES_PASSWORD=FoolishPassword
-#      - POSTGRES_USER=druid
-#      - POSTGRES_DB=druid
-#
-#  druid-coordinator:
-#    image: apache/druid:27.0.0
-#    container_name: druid-coordinator
-#    volumes:
-#      - druid_shared:/opt/shared
-#      - coordinator_var:/opt/druid/var
-#    depends_on:
-#      - zookeeper
-#      - druid-postgres
-#    ports:
-#      - "8181:8081"
-#    command:
-#      - coordinator
-#    env_file:
-#      - environment
-#
-#  druid-broker:
-#    image: apache/druid:27.0.0
-#    container_name: druid-broker
-#    volumes:
-#      - broker_var:/opt/druid/var
-#    depends_on:
-#      - zookeeper
-#      - druid-postgres
-#      - druid-coordinator
-#    ports:
-#      - "8182:8082"
-#    command:
-#      - broker
-#    env_file:
-#      - environment
-#
-#  druid-historical:
-#    image: apache/druid:27.0.0
-#    container_name: druid-historical
-#    volumes:
-#      - druid_shared:/opt/shared
-#      - historical_var:/opt/druid/var
-#    depends_on:
-#      - zookeeper
-#      - druid-postgres
-#      - druid-coordinator
-#    ports:
-#      - "8183:8083"
-#    command:
-#      - historical
-#    env_file:
-#      - environment
-#
-#  druid-middlemanager:
-#    image: apache/druid:27.0.0
-#    container_name: druid-middlemanager
-#    volumes:
-#      - druid_shared:/opt/shared
-#      - middle_var:/opt/druid/var
-#    depends_on:
-#      - zookeeper
-#      - druid-postgres
-#      - druid-coordinator
-#    ports:
-#      - "8091:8091"
-#      - "8100-8105:8100-8105"
-#    command:
-#      - middleManager
-#    env_file:
-#      - environment
-#
-#  druid-router:
-#    image: apache/druid:27.0.0
-#    container_name: router
-#    volumes:
-#      - router_var:/opt/druid/var
-#    depends_on:
-#      - zookeeper
-#      - druid-postgres
-#      - druid-coordinator
-#    ports:
-#      - "9999:8888"
-#    command:
-#      - router
-#    env_file:
-#      - environment
