@@ -23,15 +23,17 @@ public interface SolutionMapper {
     @IterableMapping(qualifiedByName = "toSolution")
     List<Solution> toSolutions(List<TaskOuterClass.Solution> solution);
 
-    @Mapping(target = "solutionGraph.graph", source = "solution.graph")
-    @Mapping(target = "isCorrect", ignore = true)
     @Mapping(target = "solutionImplementation", ignore = true)
-    TaskOuterClass.Solution toSolutionGraph(SolutionGraphInput solution);
-
-    @Mapping(target = "solutionImplementation.code", source = "solution.code")
+    @Mapping(target = "solutionGraph.graph", expression = "java(graphMapper.toGraph(solutionGraphInput.getGraph(), authorId))")
+    @Mapping(target = "authorId", expression = "java(authorId)")
     @Mapping(target = "isCorrect", ignore = true)
+    TaskOuterClass.Solution toSolutionGraph(SolutionGraphInput solution, @Context String authorId);
+
     @Mapping(target = "solutionGraph", ignore = true)
-    TaskOuterClass.Solution toSolutionImplementation(SolutionImplementationInput solution);
+    @Mapping(target = "solutionImplementation.code", source = "solution.code")
+    @Mapping(target = "authorId", expression = "java(authorId)")
+    @Mapping(target = "isCorrect", ignore = true)
+    TaskOuterClass.Solution toSolutionImplementation(SolutionImplementationInput solution, @Context String authorId);
 
     @Mapping(target = ".", source = "solution.solutionGraph")
     SolutionGraph toSolutionGraph(TaskOuterClass.Solution solution);

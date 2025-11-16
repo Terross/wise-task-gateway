@@ -23,8 +23,9 @@ security:
     expiration: 100000000
   cors:
     allowed-origins:
-      - "http://localhost:5173"
-      - "http://localhost:3000"
+      - "https://wisetask.ru" # домен фронтенда
+      - "http://localhost:5173" # для теста фронтенда
+      - "http://localhost:3000" # grafana
     allowed-methods:
       - "GET"
       - "POST"

@@ -7,7 +7,7 @@ import ru.leti.graphql.model.SignInRequest;
 import ru.leti.graphql.model.SignUpRequest;
 import ru.leti.graphql.model.Token;
 import ru.leti.wise.task.gateway.mapper.ProfileMapper;
-import ru.leti.wise.task.gateway.security.user.UserDetailsImpl;
+import ru.leti.wise.task.gateway.security.user.UserCredentials;
 import ru.leti.wise.task.gateway.service.grpc.profile.ProfileGrpcService;
 
 @Service
@@ -20,23 +20,25 @@ public class SecurityService {
 
     public Token signIn(SignInRequest request) {
         var profile = profileGrpcService.signIn(request.getEmail(), request.getPassword());
-        UserDetailsImpl userDetails = new UserDetailsImpl(profileMapper.toProfile(profile));
+        UserCredentials userDetails = new UserCredentials(profileMapper.toProfile(profile));
         return Token.builder()
                 .setToken(jwtUtils.generateJwtToken(userDetails))
                 .build();
+        // todo jwtResponse
     }
 
     public Token signUp(SignUpRequest request) {
         var profile = profileGrpcService.signUp(profileMapper.toProfile(request.getProfile()));
-        UserDetailsImpl userDetails = new UserDetailsImpl(profileMapper.toProfile(profile));
+        UserCredentials userDetails = new UserCredentials(profileMapper.toProfile(profile));
         return Token.builder()
                 .setToken(jwtUtils.generateJwtToken(userDetails))
                 .build();
+        // todo jwtResponse
     }
 
     public Token resetPassword(ResetPasswordRequest request){
         var profile = profileGrpcService.resetPassword(request.getRecoveryToken(), request.getNewPassword());
-        UserDetailsImpl userDetails = new UserDetailsImpl(profileMapper.toProfile(profile));
+        UserCredentials userDetails = new UserCredentials(profileMapper.toProfile(profile));
         return Token.builder()
                 .setToken(jwtUtils.generateJwtToken(userDetails))
                 .build();

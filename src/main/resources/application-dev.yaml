@@ -23,7 +23,7 @@ security:
     expiration: 100000000
   cors:
     allowed-origins:
-      - "http://localhost:5173"
+      - "http://localhost:5173" # для теста фронтенда
       - "http://localhost:3000"
     allowed-methods:
       - "GET"
@@ -35,7 +35,6 @@ security:
       - "*"
     allow-credentials: true
     max-age: 3600
-
 logging:
   pattern:
     level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'

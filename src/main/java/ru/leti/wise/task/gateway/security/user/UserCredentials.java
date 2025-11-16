@@ -1,32 +1,35 @@
 package ru.leti.wise.task.gateway.security.user;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.leti.graphql.model.Profile;
-
 import java.util.Collection;
 import java.util.List;
 
+
+
+@Data
+@Builder
 @AllArgsConstructor
-public class UserDetailsImpl implements UserDetails {
+public class UserCredentials implements UserDetails {
 
-    private String username;
-    private Collection<? extends GrantedAuthority> authorities;
-    @Getter
-    private Profile profile;
+    private String id;
+    private String email;
+    private String role;
 
-    public UserDetailsImpl(Profile profile) {
-        this.profile = profile;
-        this.username = profile.getEmail();
-        this.authorities = List.of(new SimpleGrantedAuthority(profile.getProfileRole().name()));
+    public UserCredentials(Profile profile) {
+        this.id = profile.getId();
+        this.email = profile.getEmail();
+        this.role = profile.getProfileRole().name();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role));
     }
 
     @Override
@@ -36,7 +39,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override

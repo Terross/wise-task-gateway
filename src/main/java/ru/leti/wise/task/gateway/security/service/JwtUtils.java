@@ -1,6 +1,5 @@
 package ru.leti.wise.task.gateway.security.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -9,28 +8,24 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.leti.wise.task.gateway.security.configuration.JwtProperties;
-import ru.leti.wise.task.gateway.security.user.UserDetailsImpl;
+import ru.leti.wise.task.gateway.security.user.UserCredentials;
 
-import java.lang.reflect.Type;
 import java.security.Key;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtUtils {
 
-    private final ObjectMapper objectMapper;
     private final JwtProperties jwtProperties;
 
-    public String generateJwtToken(UserDetailsImpl user) {
-        var profile = user.getProfile();
+    public String generateJwtToken(UserCredentials user) {
         return Jwts.builder()
                 .setClaims(Map.of(
-                        "role", profile.getProfileRole(),
-                        "id", profile.getId(),
-                        "email", profile.getEmail()
+                        "id", user.getId(),
+                        "role", user.getRole(),
+                        "email", user.getEmail()
                 ))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtProperties.expiration()))
@@ -42,11 +37,10 @@ public class JwtUtils {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperties.secret()));
     }
 
-    public String getUserNameFromJwtToken(String token) {
-        Claims claims = Jwts.parser().setSigningKey(key())
-                .parseClaimsJws(token).getBody();
-
-        return claims.get("email", String.class);
+    public String getClaimFromJwtToken(String token, String claim){
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key()).build().parseClaimsJws(token).getBody();
+        return claims.get(claim, String.class);
     }
 
     public boolean validateJwtToken(String authToken) {
@@ -64,4 +58,6 @@ public class JwtUtils {
         }
         return false;
     }
+
+
 }

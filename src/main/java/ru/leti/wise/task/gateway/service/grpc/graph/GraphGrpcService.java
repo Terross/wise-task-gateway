@@ -23,9 +23,11 @@ public class GraphGrpcService {
     private final GraphMapper graphMapper;
 
 
-    public Graph createGraph(GraphInput graph) {
+    public Graph createGraph(GraphInput graph, String userId) {
+        Graph baseGraph = graphMapper.toGraph(graph, userId);
+
         var request = GraphGrpc.CreateGraphRequest.newBuilder()
-                .setGraph(graphMapper.toGraph(graph))
+                .setGraph(baseGraph)
                 .build();
 
         return graphStubHolder.get().createGraph(request).getGraph();
@@ -54,5 +56,13 @@ public class GraphGrpcService {
                 .build();
 
         return graphStubHolder.get().removeGraph(request).getId();
+    }
+
+    public boolean isOwnerGraph(String userId, String graphId){
+        var request = GraphGrpc.IsOwnerGraphRequest.newBuilder()
+                .setGraphId(graphId)
+                .setUserId(userId)
+                .build();
+        return graphStubHolder.get().isOwnerGraph(request).getResult();
     }
 }

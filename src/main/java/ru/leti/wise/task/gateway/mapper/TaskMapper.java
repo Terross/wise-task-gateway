@@ -27,11 +27,14 @@ public interface TaskMapper {
 
     @Mapping(target = "taskImplementation", ignore = true)
     @Mapping(target = "taskGraph", source = ".")
-    TaskOuterClass.Task toTaskGraph(TaskGraphInput task);
+    @Mapping(target = "authorId", expression = "java(authorId)")
+    TaskOuterClass.Task toTaskGraph(TaskGraphInput taskGraph, @Context String authorId);
+
 
     @Mapping(target = "taskGraph", ignore = true)
     @Mapping(target = "taskImplementation", source = ".")
-    TaskOuterClass.Task toTaskImplementation(TaskImplementationInput task);
+    @Mapping(target = "authorId", expression = "java(authorId)")
+    TaskOuterClass.Task toTaskImplementation(TaskImplementationInput taskImplementation, @Context String authorId);
 
     @Mapping(target = ".", source = "task.taskGraph")
     TaskGraph toTaskGraph(TaskOuterClass.Task task);

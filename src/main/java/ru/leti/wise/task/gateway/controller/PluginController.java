@@ -6,9 +6,12 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import ru.leti.graphql.model.*;
 import ru.leti.wise.task.gateway.mapper.PluginMapper;
+import ru.leti.wise.task.gateway.security.user.UserCredentials;
 import ru.leti.wise.task.gateway.service.grpc.plugin.PluginGrpcService;
 
 import java.util.List;
@@ -41,12 +44,14 @@ public class PluginController implements GetAllPluginsQueryResolver, GetPluginQu
     @PreAuthorize("hasAnyRole(\"AUTHOR\",\"ADMIN\")")
     @MutationMapping
     public Plugin createPlugin(@Argument PluginInput plugin) {
-        return pluginMapper.toPlugin(pluginGrpcService.createPlugin(plugin));
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userId = ((UserCredentials) auth.getPrincipal()).getId();
+        return pluginMapper.toPlugin(pluginGrpcService.createPlugin(plugin, userId));
     }
 
     @Override
     @PreAuthorize("(hasRole(\"AUTHOR\")" +
-            " and pluginGrpcService.isOwnerPlugin(authentication.principal.profile.id,#id))" +
+            " and @pluginGrpcService.isOwnerPlugin(authentication.principal.id,#id))" +
             " or hasRole(\"ADMIN\")")
     @MutationMapping
     public String deletePlugin(@Argument String id) {
@@ -69,17 +74,19 @@ public class PluginController implements GetAllPluginsQueryResolver, GetPluginQu
 
     @Override
     @PreAuthorize(
-            "(hasRole(\"AUTHOR\") and pluginGrpcService.isOwnerPlugin(authentication.principal.profile.id,#plugin.getId()))" +
+            "(hasRole(\"AUTHOR\") and @pluginGrpcService.isOwnerPlugin(authentication.principal.id,#plugin.getId()))" +
             " or hasRole(\"ADMIN\")"
     )
     @MutationMapping
     public Plugin updatePlugin(@Argument PluginInput plugin) {
-        return pluginMapper.toPlugin(pluginGrpcService.updatePlugin(plugin));
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userId = ((UserCredentials) auth.getPrincipal()).getId();
+        return pluginMapper.toPlugin(pluginGrpcService.updatePlugin(plugin, userId));
     }
 
     @Override
     @PreAuthorize(
-            "(hasRole(\"AUTHOR\") and pluginGrpcService.isOwnerPlugin(authentication.principal.profile.id,#id))" +
+            "(hasRole(\"AUTHOR\") and @pluginGrpcService.isOwnerPlugin(authentication.principal.id,#id))" +
                     " or hasRole(\"ADMIN\")")
     @MutationMapping
     public String validatePlugin(@Argument String id) {

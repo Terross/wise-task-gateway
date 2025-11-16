@@ -14,6 +14,7 @@ create table profile (
 create table password_recovery (
                                    recovery_token uuid not null,
                                    email varchar(255),
+                                   created_at timestamp(6),
                                    expires_at timestamp(6),
                                    primary key (recovery_token)
 );

@@ -1,8 +1,6 @@
 package ru.leti.wise.task.gateway.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.NullValueCheckStrategy;
+import org.mapstruct.*;
 import ru.leti.graphql.model.*;
 import ru.leti.wise.task.plugin.PluginOuterClass;
 
@@ -13,9 +11,8 @@ public interface PluginMapper {
 
     Plugin toPlugin(PluginOuterClass.Plugin plugin);
 
-    PluginOuterClass.Plugin toPlugin(PluginInput plugin);
-
-    List<PluginOuterClass.Plugin> toProtoPlugins(List<PluginInput> plugins);
+    @Mapping(target = "authorId", expression = "java(authorId)")
+    PluginOuterClass.Plugin toPlugin(PluginInput plugin, @Context String authorId);
 
     List<Plugin> toResponsePlugins(List<PluginOuterClass.Plugin> plugins);
 

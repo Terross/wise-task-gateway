@@ -7,6 +7,8 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import ru.leti.graphql.model.*;
 import ru.leti.wise.task.gateway.mapper.ProfileMapper;
@@ -64,7 +66,7 @@ GetProfileQueryResolver, UpdateProfileMutationResolver, DeleteProfileMutationRes
 
     @Override
     @MutationMapping
-    @PreAuthorize("authentication.principal.profile.id.equals(#id) or hasRole(\"ADMIN\")")
+    @PreAuthorize("authentication.principal.id.equals(#id) or hasRole(\"ADMIN\")")
     public String changePassword(@Argument String id, @Argument String oldPassword, @Argument String newPassword){
         profileGrpcService.changePassword(id,oldPassword,newPassword);
         return id;
@@ -79,14 +81,14 @@ GetProfileQueryResolver, UpdateProfileMutationResolver, DeleteProfileMutationRes
 
     @Override
     @MutationMapping
-    @PreAuthorize("authentication.principal.profile.id.equals(#profile.id) or hasRole(\"ADMIN\")")
+    @PreAuthorize("authentication.principal.id.equals(#profile.id) or hasRole(\"ADMIN\")")
     public Profile updateProfile(@Argument ProfileInput profile) {
         return profileMapper.toProfile(profileGrpcService.updateProfile(profileMapper.toProfile(profile)));
     }
 
     @Override
     @MutationMapping
-    @PreAuthorize("authentication.principal.profile.id.equals(#id) or hasRole(\"ADMIN\")")
+    @PreAuthorize("authentication.principal.id.equals(#id) or hasRole(\"ADMIN\")")
     public String deleteProfile(@Argument String id) {
         profileGrpcService.deleteProfile(id);
         return id;
