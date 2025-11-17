@@ -19,7 +19,8 @@ server:
   port: 8084
 security:
   jwt:
-    secret: ======================wise=task=secret===========================
+    private-key: classpath:certs/private.pem
+    public-key: classpath:certs/public.pem
     expiration: 100000000
   cors:
     allowed-origins:

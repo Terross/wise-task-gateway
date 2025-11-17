@@ -29,23 +29,20 @@ public class JwtUtils {
                 ))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtProperties.expiration()))
-                .signWith(SignatureAlgorithm.HS256, key())
+                .signWith(jwtProperties.privateKey(), SignatureAlgorithm.RS256)
                 .compact();
     }
 
-    private Key key() {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperties.secret()));
-    }
 
     public String getClaimFromJwtToken(String token, String claim){
         Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key()).build().parseClaimsJws(token).getBody();
+                .setSigningKey(jwtProperties.publicKey()).build().parseClaimsJws(token).getBody();
         return claims.get(claim, String.class);
     }
 
     public boolean validateJwtToken(String authToken) {
         try {
-            Jwts.parser().setSigningKey(key()).parse(authToken);
+            Jwts.parser().setSigningKey(jwtProperties.publicKey()).parse(authToken);
             return true;
         } catch (MalformedJwtException e) {
             log.error("Invalid JWT token: {}", e.getMessage());
@@ -58,6 +55,4 @@ public class JwtUtils {
         }
         return false;
     }
-
-
 }
