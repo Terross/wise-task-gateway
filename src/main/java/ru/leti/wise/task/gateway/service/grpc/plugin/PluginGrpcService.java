@@ -21,7 +21,6 @@ import java.util.List;
 public class PluginGrpcService {
 
     private final PluginStubHolder pluginStubHolder;
-    private final GraphMapper graphMapper;
     private final PluginMapper pluginMapper;
 
     public boolean isOwnerPlugin(String userId, String pluginId) {
@@ -47,9 +46,9 @@ public class PluginGrpcService {
     }
 
 
-    public PluginOuterClass.Plugin createPlugin(PluginInput plugin) {
+    public PluginOuterClass.Plugin createPlugin(PluginInput plugin, String authorId) {
         var request = PluginGrpc.CreatePluginRequest.newBuilder()
-                .setPlugin(pluginMapper.toPlugin(plugin))
+                .setPlugin(pluginMapper.toPlugin(plugin, authorId))
                 .build();
 
         return pluginStubHolder.get().createPlugin(request).getPlugin();
@@ -75,9 +74,9 @@ public class PluginGrpcService {
         return pluginStubHolder.get().getPlugin(request).getPlugin();
     }
 
-    public PluginOuterClass.Plugin updatePlugin(PluginInput plugin) {
+    public PluginOuterClass.Plugin updatePlugin(PluginInput plugin, String authorId) {
         var request = PluginGrpc.UpdatePluginRequest.newBuilder()
-                .setPlugin(pluginMapper.toPlugin(plugin))
+                .setPlugin(pluginMapper.toPlugin(plugin, authorId))
                 .build();
 
         return pluginStubHolder.get().updatePlugin(request).getPlugin();

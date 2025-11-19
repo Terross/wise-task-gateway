@@ -1,8 +1,6 @@
 package ru.leti.wise.task.gateway.mapper;
 
-import org.mapstruct.CollectionMappingStrategy;
-import org.mapstruct.Mapper;
-import org.mapstruct.NullValueCheckStrategy;
+import org.mapstruct.*;
 import ru.leti.graphql.model.*;
 import ru.leti.wise.task.graph.GraphGrpc;
 import ru.leti.wise.task.graph.GraphOuterClass;
@@ -12,8 +10,8 @@ import java.util.List;
 @Mapper(componentModel = "spring", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
         collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED)
 public interface GraphMapper {
-
-    GraphOuterClass.Graph toGraph(GraphInput graph);
+    @Mapping(target = "authorId", expression = "java(authorId)")
+    GraphOuterClass.Graph toGraph(GraphInput graph, @Context String authorId);
 
     GraphOuterClass.Vertex toVertex(VertexInput vertex);
 

@@ -148,21 +148,21 @@ services:
       - LOKI_HOST=loki
       - TEMPO_HOST=tempo
 
-  wise-task-event-adapter:
-    build:
-      context: ../wise-task-event-adapter
-      dockerfile: Dockerfile
-      tags:
-        - 'wise-task-event-adapter'
-      network: host
-    image: 'wise-task-event-adapter'
-    container_name: wise-task-event-adapter
-    ports:
-      - "8085:8085"
-    environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - LOKI_HOST=loki
-      - TEMPO_HOST=tempo
+        #wise-task-event-adapter:
+        #build:
+        #context: ../wise-task-event-adapter
+        #dockerfile: Dockerfile
+        #tags:
+        #- 'wise-task-event-adapter'
+        #network: host
+        #image: 'wise-task-event-adapter'
+        #container_name: wise-task-event-adapter
+        #ports:
+        #- "8085:8085"
+        #environment:
+        #- SPRING_PROFILES_ACTIVE=prod
+        #- LOKI_HOST=loki
+        #- TEMPO_HOST=tempo
 
   tempo:
     image: grafana/tempo
@@ -208,6 +208,7 @@ services:
       - SMTP_SERVER_HOSTNAME=localhost
       - SMTP_SERVER_DOMAIN=wisetask.ru
       - RELAY_NETWORKS=0.0.0.0/0
+      - POSTFIX_mailbox_command=/bin/cat
       - ALLOWED_SENDER_DOMAINS=wisetask.ru
       - LOG_TO_STDOUT=1
     hostname: mail
