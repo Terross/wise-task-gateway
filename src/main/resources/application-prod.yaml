@@ -25,6 +25,8 @@ security:
   cors:
     allowed-origins:
       - "https://wisetask.ru" # домен фронтенда
+      - "https://wisetask.ru:82"
+      - "https://wisetask.ru:82/graphql"
       - "http://localhost:5173" # для теста фронтенда
       - "http://localhost:3000" # grafana
     allowed-methods:

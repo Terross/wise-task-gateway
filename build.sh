@@ -1,7 +1,10 @@
 #! /bin/bash
 username="Terross"
 
-echo "Введите токен:"
+echo "Input token:"
 read token
 
-USERNAME=$username TOKEN=$token docker-compose up --build
+echo "Input service name"
+read service
+
+USERNAME=$username TOKEN=$token docker compose up --build -d $service

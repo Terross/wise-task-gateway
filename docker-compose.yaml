@@ -1,13 +1,3 @@
-volumes:
-  metadata_data: {}
-  middle_var: {}
-  historical_var: {}
-  broker_var: {}
-  coordinator_var: {}
-  router_var: {}
-  druid_shared: {}
-  wise-task-db: {}
-  wise-task-mongo: {}
 
 services:
   wise-task-db:
@@ -29,7 +19,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - wise-task-mongo:/var/lib/mongodb/data
+      - wise-task-mongo:/data/db
 
   wise-task-graph:
     build:
@@ -233,3 +223,14 @@ services:
       - prometheus
     ports:
       - "3000:3000"
+
+volumes:
+  wise-task-mongo: {}
+  metadata_data: {}
+  middle_var: {}
+  historical_var: {}
+  broker_var: {}
+  coordinator_var: {}
+  router_var: {}
+  druid_shared: {}
+  wise-task-db: {}
