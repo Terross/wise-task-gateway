@@ -7,7 +7,6 @@ input SignUpRequest {
     profile: ProfileInput!
 }
 
-
 input ResetPasswordRequest {
     recoveryToken: String!
     newPassword: String!
@@ -20,8 +19,7 @@ input ProfileInput {
     firstName: String!
     lastName: String!
     patronymic: String
-    profileRole: Role!
-    studentGroup: String
+    profileRole: Role
 }
 
 type Token {
@@ -36,7 +34,6 @@ type Profile {
     lastName: String!
     patronymic: String
     profileRole: Role!
-    studentGroup: String
 }
 
 enum Role {
