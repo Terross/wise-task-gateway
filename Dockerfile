@@ -14,4 +14,4 @@ RUN mkdir /app
 
 COPY --from=build /src/build/libs/wise-task-gateway-1.0.0.jar /app/app.jar
 
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+ENTRYPOINT ["java","-jar","/app/app.jar", "--spring.config.location=classpath:/,file:/app/config/"]

@@ -27,8 +27,9 @@ security:
       - "https://wisetask.ru" # домен фронтенда
       - "https://wisetask.ru:82"
       - "https://wisetask.ru:82/graphql"
-      - "http://localhost:5173" # для теста фронтенда
+      - "http://localhost:5173" 
       - "http://localhost:3000" # grafana
+      - "http://localhost:3150"
     allowed-methods:
       - "GET"
       - "POST"
