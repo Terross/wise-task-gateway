@@ -1,5 +1,31 @@
 
 services:
+  wise-task-event-db:
+    image: timescale/timescaledb:latest-pg16
+    container_name: wise-task-event-db
+    ports:
+      - "5433:5433"
+    environment:
+      POSTGRES_USER: wise_task_event
+      POSTGRES_PASSWORD: wise_task_event
+      POSTGRES_DB: wise_task_event
+      POSTGRES_PORT: 5433
+    volumes:
+      - wise-task-event-db:/var/lib/postgresql/data
+    command: postgres -p 5433
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U wise_task_event -d wise_task_event" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: always
+
+  wise-task-event:
+    build:
+      context: ../wise-task-event
+      dockerfile: Dockerfile
+
   wise-task-db:
     image: postgres:17-alpine
     container_name: wise-task-db
@@ -141,22 +167,6 @@ services:
       - ./src/main/resources/application-prod.yaml:/app/config/application-prod.yaml:ro
       - ./src/main/resources/application-dev.yaml:/app/config/application-dev.yaml:ro
 
-        #wise-task-event-adapter:
-        #build:
-        #context: ../wise-task-event-adapter
-        #dockerfile: Dockerfile
-        #tags:
-        #- 'wise-task-event-adapter'
-        #network: host
-        #image: 'wise-task-event-adapter'
-        #container_name: wise-task-event-adapter
-        #ports:
-        #- "8085:8085"
-        #environment:
-        #- SPRING_PROFILES_ACTIVE=prod
-        #- LOKI_HOST=loki
-        #- TEMPO_HOST=tempo
-
   tempo:
     image: grafana/tempo
     command: [ "-config.file=/etc/tempo.yaml" ]
@@ -237,3 +247,4 @@ volumes:
   router_var: {}
   druid_shared: {}
   wise-task-db: {}
+  wise-task-event-db: {}
