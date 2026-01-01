@@ -17,6 +17,9 @@ type Query {
     getTaskSolution(id: ID!): Solution!
     getAllTaskSolutions(userId: ID!, taskId: ID!): [Solution]!
     getUserSolutionStatistic(userId: ID!): [Solution]!
+
+    #event
+
 }
 
 type Mutation {

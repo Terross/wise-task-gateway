@@ -25,6 +25,17 @@ services:
     build:
       context: ../wise-task-event
       dockerfile: Dockerfile
+      tags:
+        - 'wise-task-event'
+      network: host
+    container_name: wise-task-event
+    depends_on:
+      - wise-task-event-db
+    ports:
+      - "6569:6569"
+      - "8085:8085"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
 
   wise-task-db:
     image: postgres:17-alpine

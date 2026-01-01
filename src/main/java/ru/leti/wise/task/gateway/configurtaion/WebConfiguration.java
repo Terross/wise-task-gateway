@@ -1,5 +1,6 @@
 package ru.leti.wise.task.gateway.configurtaion;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistration;
@@ -31,5 +32,15 @@ public class WebConfiguration implements WebMvcConfigurer {
         if (corsProperties.maxAge() != null) {
             registration.maxAge(corsProperties.maxAge());
         }
+    }
+
+
+    @PostConstruct
+    public void init() {
+        System.out.println("=== CORS PROPERTIES ===");
+        System.out.println("Allowed origins: " + corsProperties.allowedOrigins());
+        System.out.println("Allowed methods: " + corsProperties.allowedMethods());
+        System.out.println("Allow credentials: " + corsProperties.allowCredentials());
+        System.out.println("=========================");
     }
 }
