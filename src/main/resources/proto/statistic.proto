@@ -8,13 +8,11 @@ service StatisticsService{
 }
 
 message StatisticRequest{
-    StatisticType type = 1;
-    StatisticScope scope = 2;
-    string event_type = 3;
-    oneof relyOn {
-      string task_id = 4;
-      string user_id = 5;
-    }
+  StatisticType type = 1;
+  StatisticScope scope = 2;
+  string event_type = 3;
+  optional string task_id = 4;
+  optional string user_id = 5;
 }
 
 message Session{
@@ -27,10 +25,8 @@ message StatisticResponse{
   StatisticScope scope = 1;
   StatisticType type = 2;
   google.protobuf.Timestamp update_at = 3;
-  oneof relyOn{
-    string task_id = 4;
-    string user_id = 5;
-  }
+  optional string task_id = 4;
+  optional string user_id = 5;
   double value = 6;
   string event_type = 7;
 }

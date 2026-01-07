@@ -19,7 +19,7 @@ type Query {
     getUserSolutionStatistic(userId: ID!): [Solution]!
 
     #event
-
+    getStatistic(request: StatisticRequestInput!): StatisticResponse!
 }
 
 type Mutation {

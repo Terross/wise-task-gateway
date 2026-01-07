@@ -33,14 +33,4 @@ public class WebConfiguration implements WebMvcConfigurer {
             registration.maxAge(corsProperties.maxAge());
         }
     }
-
-
-    @PostConstruct
-    public void init() {
-        System.out.println("=== CORS PROPERTIES ===");
-        System.out.println("Allowed origins: " + corsProperties.allowedOrigins());
-        System.out.println("Allowed methods: " + corsProperties.allowedMethods());
-        System.out.println("Allow credentials: " + corsProperties.allowCredentials());
-        System.out.println("=========================");
-    }
 }

@@ -15,6 +15,9 @@ grpc:
     task:
       host: wise-task-task
       port: 6568
+    statistics:
+      host: wise-task-event
+      port: 6569
 server:
   port: 8084
 security:
