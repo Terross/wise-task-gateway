@@ -37,7 +37,7 @@ public class TaskController implements GetTaskQueryResolver, GetAllTasksQueryRes
     private final GraphMapper graphMapper;
 
     @Override
-    @QueryMapping
+    @MutationMapping
     @PreAuthorize(
             "hasRole(\"AUTHOR\") and " +
             "@taskGrpcService.getTask(#id).getAuthorId().equals(authentication.principal.profile.id) or" +
