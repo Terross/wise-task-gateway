@@ -81,7 +81,7 @@ GetProfileQueryResolver, UpdateProfileMutationResolver, DeleteProfileMutationRes
 
     @Override
     @MutationMapping
-    @PreAuthorize("authentication.principal.id.equals(#profile.id) or hasRole(\"ADMIN\")")
+    @PreAuthorize("hasRole(\"ADMIN\")")
     public Profile updateProfile(@Argument ProfileInput profile) {
         return profileMapper.toProfile(profileGrpcService.updateProfile(profileMapper.toProfile(profile)));
     }

@@ -4,49 +4,42 @@ spring:
 grpc:
   service:
     graph:
-      host: wise-task-graph
-      port: 6565
+      host: ${GRAPH_APP_NAME}
+      port: ${GRAPH_GRPC_PORT}
     profile:
-      host: wise-task-profile
-      port: 6567
+      host: ${PROFILE_APP_NAME}
+      port: ${PROFILE_GRPC_PORT}
     plugin:
-      host: wise-task-plugin
-      port: 6566
+      host: ${PLUGIN_APP_NAME}
+      port: ${PLUGIN_GRPC_PORT}
     task:
-      host: wise-task-task
-      port: 6568
+      host: ${TASK_APP_NAME}
+      port: ${TASK_GRPC_PORT}
     statistics:
-      host: wise-task-event
-      port: 6569
+      host: ${EVENT_APP_NAME}
+      port: ${EVENT_GRPC_PORT}
 server:
-  port: 8084
+  port: ${GATEWAY_PORT}
 security:
   jwt:
     private-key: classpath:certs/private.pem
     public-key: classpath:certs/public.pem
-    expiration: 100000000
+    expiration: ${JWT_EXPIRATION_SEC}
   cors:
-    allowed-origins:
-      - "https://wisetask.ru" # домен фронтенда
-      - "https://wisetask.ru:82"
-      - "https://wisetask.ru:82/graphql"
-      - "http://localhost:5173" 
-      - "http://localhost:3000" # grafana
-      - "http://localhost:3150"
-    allowed-methods:
-      - "GET"
-      - "POST"
-      - "PUT"
-      - "DELETE"
-      - "OPTIONS"
-    allowed-headers:
-      - "*"
-    allow-credentials: true
-    max-age: 3600
+    allowed-origins: ${CORS_ALLOWED_ORIGINS}
+    allowed-methods: ${CORS_ALLOWED_METHODS}
+    allowed-headers: "*"
+    allow-credentials: ${CORS_ALLOWED_CREDENTIALS}
+    max-age: ${CORS_MAX_AGE}
 
 logging:
   pattern:
     level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
+  level:
+    ru.leti.wise.task.gateway: ${LOGGING_LEVEL}
+    org.springframework.web: ${LOGGING_LEVEL}
+    org.springframework.security: ${LOGGING_LEVEL}
+
 
 management:
   tracing:
@@ -66,5 +59,5 @@ management:
             requests: true
   zipkin:
     tracing:
-      endpoint: http://${TEMPO_HOST:localhost}:${TEMPO_PORT:9411}/api/v2/spans
+      endpoint: http://${TEMPO_HOST}:${TEMPO_PORT}/api/v2/spans
 

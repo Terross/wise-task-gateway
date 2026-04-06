@@ -1,18 +1,18 @@
 
 services:
   wise-task-event-db:
-    image: timescale/timescaledb:latest-pg16
-    container_name: wise-task-event-db
+    image: timescale/timescaledb:2.26.0-pg16
+    container_name: ${EVENT_DB_APP_NAME}
     ports:
-      - "5433:5433"
+      - "127.0.0.1:${EVENT_DB_PORT}:${EVENT_DB_PORT}"
     environment:
-      POSTGRES_USER: wise_task_event
-      POSTGRES_PASSWORD: wise_task_event
-      POSTGRES_DB: wise_task_event
-      POSTGRES_PORT: 5433
+      POSTGRES_USER: ${EVENT_DB_USER}
+      POSTGRES_PASSWORD: ${EVENT_DB_PASSWORD}
+      POSTGRES_DB: ${EVENT_DB}
+      POSTGRES_PORT: ${EVENT_DB_PORT}
     volumes:
       - wise-task-event-db:/var/lib/postgresql/data
-    command: postgres -p 5433
+    command: postgres -p ${EVENT_DB_PORT}
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U wise_task_event -d wise_task_event" ]
       interval: 5s
@@ -28,33 +28,40 @@ services:
       tags:
         - 'wise-task-event'
       network: host
-    container_name: wise-task-event
+    container_name: ${EVENT_APP_NAME}
     depends_on:
       - wise-task-event-db
     ports:
-      - "6569:6569"
-      - "8085:8085"
+      - "127.0.0.1:${EVENT_GRPC_PORT}:${EVENT_GRPC_PORT}"
+      - "127.0.0.1:${EVENT_PORT}:${EVENT_PORT}"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
+      - EVENT_GRPC_PORT=${EVENT_GRPC_PORT}
+      - EVENT_PORT=${EVENT_PORT}
+      - EVENT_DB_USER=${EVENT_DB_USER}
+      - EVENT_DB_PASSWORD=${EVENT_DB_PASSWORD}
+      - EVENT_DB=${EVENT_DB}
+      - CACHE_SPEC=${CACHE_SPEC}
+      - TIME_TO_LIVE_SECONDS=${TIME_TO_LIVE_SECONDS}
+      - LOGGING_LEVEL=${GRAPH_LOGGING_LEVEL}
 
   wise-task-db:
-    image: postgres:17-alpine
-    container_name: wise-task-db
+    image: postgres:17-alpine3.22
+    container_name: ${DB_APP_NAME}
     environment:
-      - POSTGRES_PASSWORD=wise-task
-      - POSTGRES_USER=wise-task
-      - POSTGRES_DB=wise-task
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - wise-task-db:/var/lib/postgresql/data
       - ./docker/postgres/init-scripts:/docker-entrypoint-initdb.d
 
   wise-task-mongo:
-    image: mongo:latest
-    container_name: wise-task-mongo
+    image: mongo:7.0.31
+    container_name: ${MONGO_APP_NAME}
     ports:
-      - "27017:27017"
+      - "127.0.0.1:${MONGO_PORT}:${MONGO_PORT}"
     volumes:
       - wise-task-mongo:/data/db
 
@@ -71,15 +78,22 @@ services:
     image: 'wise-task-graph'
     depends_on:
       - wise-task-mongo
-    container_name: wise-task-graph
+    container_name: ${GRAPH_APP_NAME}
     ports:
-      - "6565:6565"
-      - "8080:8080"
+      - "127.0.0.1:${GRAPH_GRPC_PORT}:${GRAPH_GRPC_PORT}"
+      - "127.0.0.1:${GRAPH_PORT}:${GRAPH_PORT}"
     environment:
       - MANAGEMENT_METRICS_ENABLE_PROCESS=false
       - SPRING_PROFILES_ACTIVE=prod
-      - LOKI_HOST=loki
-      - TEMPO_HOST=tempo
+      - LOKI_HOST=${LOKI_HOST}
+      - LOKI_PORT=${LOKI_PORT}
+      - TEMPO_HOST=${TEMPO_HOST}
+      - TEMPO_PORT=${TEMPO_PORT}
+      - MONGO_APP_NAME=${MONGO_APP_NAME}
+      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_DB=${MONGO_DB}
+      - GRAPH_PORT=${GRAPH_PORT}
+      - GRAPH_GRPC_PORT=${GRAPH_GRPC_PORT}
 
   wise-task-plugin:
     build:
@@ -94,16 +108,28 @@ services:
     image: 'wise-task-plugin'
     depends_on:
       - wise-task-db
+      - wise-task-task
       - wise-task-graph
-    container_name:  wise-task-plugin
+    container_name: ${PLUGIN_APP_NAME}
     ports:
-      - "6566:6566"
-      - "8081:8081"
+      - "127.0.0.1:${PLUGIN_GRPC_PORT}:${PLUGIN_GRPC_PORT}"
+      - "127.0.0.1:${PLUGIN_PORT}:${PLUGIN_PORT}"
     environment:
       - MANAGEMENT_METRICS_ENABLE_PROCESS=false
       - SPRING_PROFILES_ACTIVE=prod
-      - LOKI_HOST=loki
-      - TEMPO_HOST=tempo
+      - LOKI_HOST=${LOKI_HOST}
+      - LOKI_PORT=${LOKI_PORT}
+      - TEMPO_HOST=${TEMPO_HOST}
+      - TEMPO_PORT=${TEMPO_PORT}
+      - PLUGIN_DB=${PLUGIN_DB}
+      - PLUGIN_DB_USER=${PLUGIN_DB_USER}
+      - PLUGIN_DB_PASSWORD=${PLUGIN_DB_PASSWORD}
+      - PLUGIN_PATH=${PLUGIN_PATH}
+      - PLUGIN_PORT=${PLUGIN_PORT}
+      - LOGGING_LEVEL=${PLUGIN_LOGGING_LEVEL}
+      - PLUGIN_VALIDATION_LIMIT=${PLUGIN_VALIDATION_LIMIT}
+      - GRAPH_APP_NAME=${GRAPH_APP_NAME}
+      - GRAPH_GRPC_PORT=${GRAPH_GRPC_PORT}
 
   wise-task-profile:
     build:
@@ -120,12 +146,21 @@ services:
       - wise-task-db
     container_name: wise-task-profile
     ports:
-      - "8082:8082"
-      - "6567:6567"
+      - "127.0.0.1:${PROFILE_PORT}:${PROFILE_PORT}"
+      - "127.0.0.1:${PROFILE_GRPC_PORT}:${PROFILE_GRPC_PORT}"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-      - LOKI_HOST=loki
-      - TEMPO_HOST=tempo
+      - LOKI_HOST=${LOKI_HOST}
+      - LOKI_PORT=${LOKI_PORT}
+      - TEMPO_HOST=${TEMPO_HOST}
+      - TEMPO_PORT=${TEMPO_PORT}
+      - DB=${DB_APP_NAME}
+      - LOGGING_LEVEL=${PROFILE_LOGGING_LEVEL}
+      - PROFILE_GRPC_PORT=${PROFILE_GRPC_PORT}
+      - PROFILE_PORT=${PROFILE_PORT}
+      - PROFILE_DB=${PROFILE_DB}
+      - PROFILE_DB_USER=${PROFILE_DB_USER}
+      - PROFILE_DB_PASSWORD=${PROFILE_DB_PASSWORD}
 
   wise-task-task:
     build:
@@ -141,15 +176,27 @@ services:
     depends_on:
       - wise-task-db
       - wise-task-graph
-      - wise-task-plugin
-    container_name: wise-task-task
+    container_name: ${TASK_APP_NAME}
     ports:
-      - "6568:6568"
-      - "8083:8083"
+      - "127.0.0.1:${TASK_GRPC_PORT}:${TASK_GRPC_PORT}"
+      - "127.0.0.1:${TASK_PORT}:${TASK_PORT}"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-      - LOKI_HOST=loki
-      - TEMPO_HOST=tempo
+      - LOKI_HOST=${LOKI_HOST}
+      - LOKI_PORT=${LOKI_PORT}
+      - TEMPO_HOST=${TEMPO_HOST}
+      - TEMPO_PORT=${TEMPO_PORT}
+      - LOGGING_LEVEL=${TASK_LOGGING_LEVEL}
+      - DB=${DB_APP_NAME}
+      - TASK_GRPC_PORT=${TASK_GRPC_PORT}
+      - TASK_PORT=${TASK_PORT}
+      - TASK_DB=${TASK_DB}
+      - TASK_DB_USER=${TASK_DB_USER}
+      - TASK_DB_PASSWORD=${TASK_DB_PASSWORD}
+      - PLUGIN_APP_NAME=${PLUGIN_APP_NAME}
+      - PLUGIN_GRPC_PORT=${PLUGIN_GRPC_PORT}
+      - GRAPH_APP_NAME=${GRAPH_APP_NAME}
+      - GRAPH_GRPC_PORT=${GRAPH_GRPC_PORT}
 
   wise-task-gateway:
     build:
@@ -167,13 +214,32 @@ services:
       - wise-task-task
       - wise-task-plugin
       - wise-task-graph
-    container_name: wise-task-gateway
+    container_name: ${GATEWAY_APP_NAME}
     ports:
-      - "8084:8084"
+      - "127.0.0.1:${GATEWAY_PORT}:${GATEWAY_PORT}"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-      - LOKI_HOST=loki
-      - TEMPO_HOST=tempo
+      - LOKI_HOST=${LOKI_HOST}
+      - LOKI_PORT=${LOKI_PORT}
+      - TEMPO_HOST=${TEMPO_HOST}
+      - TEMPO_PORT=${TEMPO_PORT}
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
+      - CORS_ALLOWED_METHODS=${CORS_ALLOWED_METHODS}
+      - CORS_ALLOWED_CREDENTIALS=${CORS_ALLOWED_CREDENTIALS}
+      - CORS_MAX_AGE=${CORS_MAX_AGE}
+      - JWT_EXPIRATION_SEC=${JWT_EXPIRATION_SEC}
+      - LOGGING_LEVEL=${GATEWAY_LOGGING_LEVEL}
+      - GATEWAY_PORT=${GATEWAY_PORT}
+      - GRAPH_APP_NAME=${GRAPH_APP_NAME}
+      - GRAPH_GRPC_PORT=${GRAPH_GRPC_PORT}
+      - TASK_APP_NAME=${TASK_APP_NAME}
+      - TASK_GRPC_PORT=${TASK_GRPC_PORT}
+      - PROFILE_APP_NAME=${PROFILE_APP_NAME}
+      - PROFILE_GRPC_PORT=${PROFILE_GRPC_PORT}
+      - PLUGIN_APP_NAME=${PLUGIN_APP_NAME}
+      - PLUGIN_GRPC_PORT=${PLUGIN_GRPC_PORT}
+      - EVENT_APP_NAME=${EVENT_APP_NAME}
+      - EVENT_GRPC_PORT=${EVENT_GRPC_PORT}
     volumes:
       - ./src/main/resources/application-prod.yaml:/app/config/application-prod.yaml:ro
       - ./src/main/resources/application-dev.yaml:/app/config/application-dev.yaml:ro
@@ -185,17 +251,17 @@ services:
       - ./docker/tempo/tempo-local.yml:/etc/tempo.yaml
       - ./docker/tempo/tempo-data:/tmp/tempo
     ports:
-      - "3200:3200"
-      - "9411:9411"  # Zipkin
-      - "14268:14268" # Jaeger ingest
+      - "127.0.0.1:3200:3200"
+      - "127.0.0.1:9411:9411"  # Zipkin
+      - "127.0.0.1:14268:14268" # Jaeger ingest
   loki:
     image: grafana/loki
     command: [ "-config.file=/etc/loki/local-config.yaml" ]
     ports:
-      - "3100:3100"
+      - "127.0.0.1:3100:3100"
     environment:
-      - JAEGER_AGENT_HOST=tempo
-      - JAEGER_ENDPOINT=http://tempo:14268/api/traces
+      - JAEGER_AGENT_HOST=${TEMPO_HOST}
+      - JAEGER_ENDPOINT=http://${TEMPO_HOST}:14268/api/traces
       - JAEGER_SAMPLER_TYPE=const
       - JAEGER_SAMPLER_PARAM=1
 
@@ -210,14 +276,14 @@ services:
     volumes:
       - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
-      - "9090:9090"
+      - "127.0.0.1:9090:9090"
 
   smtp:
     image: boky/postfix
     container_name: smtp-server
     restart: unless-stopped
     ports:
-      - "25:25"
+      - "127.0.0.1:25:25"
     environment:
       - SMTP_SERVER_HOSTNAME=localhost
       - SMTP_SERVER_DOMAIN=wisetask.ru
@@ -246,7 +312,7 @@ services:
       - loki
       - prometheus
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
 
 volumes:
   wise-task-mongo: {}
