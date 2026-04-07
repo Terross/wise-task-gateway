@@ -58,7 +58,7 @@ services:
       - ./docker/postgres/init-scripts:/docker-entrypoint-initdb.d
 
   wise-task-mongo:
-    image: mongo:7.0.31
+    image: mongo:8.0.4
     container_name: ${MONGO_APP_NAME}
     ports:
       - "127.0.0.1:${MONGO_PORT}:${MONGO_PORT}"
