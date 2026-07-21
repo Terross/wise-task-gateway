@@ -1,12 +1,8 @@
-import org.flywaydb.gradle.task.FlywayMigrateTask
-
 plugins {
     id 'java'
+    id 'org.springframework.boot' version "4.1.0"
+    id 'io.spring.dependency-management' version "1.1.7"
     id "com.google.protobuf" version "0.10.0"
-    id "org.flywaydb.flyway" version "9.21.1"
-    id 'org.springframework.boot' version "${springBootVersion}"
-    id 'io.spring.dependency-management' version "${dependencyManagementPluginVersion}"
-    id "io.github.kobylynskyi.graphql.codegen" version "5.7.2"
 }
 
 group = 'ru.leti'
@@ -27,25 +23,14 @@ repositories {
     mavenCentral()
 }
 
-sourceSets {
-    main {
-        proto {
-            srcDir 'src/main/resources/proto'
-        }
-        java {
-            srcDir "$buildDir/generated/source/graphql"
-        }
-    }
-}
-
 dependencies {
     // security
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 
 
-    // gRPC
+    // API
     implementation 'org.springframework.boot:spring-boot-starter-graphql'
-    implementation 'org.springframework.boot:spring-boot-starter-grpc-server'
+    implementation 'org.springframework.boot:spring-boot-starter-grpc-client'
     implementation 'io.grpc:grpc-services'
 
 
@@ -62,70 +47,33 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.46'
     annotationProcessor 'org.projectlombok:lombok:1.18.46'
 
+    // Mapping
+    implementation 'org.mapstruct:mapstruct:1.6.3'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
+    // Config processor for IDE
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-    implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.graphql:spring-graphql-test'
 }
 
-task pluginMigrate(type: FlywayMigrateTask) {
-    url = 'jdbc:postgresql://localhost:5432/wise_task_plugin'
-    user = 'wise_task_plugin'
-    password = 'wise_task_plugin'
-    cleanDisabled = false
-    locations = ['filesystem:./src/main/resources/db/plugin/migration']
-}
-
-task profileMigrate(type: FlywayMigrateTask) {
-    url = 'jdbc:postgresql://localhost:5432/wise_task_profile'
-    user = 'wise_task_profile'
-    password = 'wise_task_profile'
-    cleanDisabled = false
-    locations = ['filesystem:./src/main/resources/db/profile/migration']
-}
-
-task taskMigrate(type: FlywayMigrateTask) {
-    url = 'jdbc:postgresql://localhost:5432/wise_task_task'
-    user = 'wise_task_task'
-    password = 'wise_task_task'
-    cleanDisabled = false
-    locations = ['filesystem:./src/main/resources/db/task/migration']
-}
-
-graphqlCodegen {
-    graphqlSchemas {
-        rootDir = "$projectDir/src/main/resources/graphql/".toString()
-    }
-    outputDir = new File("$buildDir/generated/source/graphql")
-    packageName = "ru.leti.graphql.model"
-}
-
-compileJava.dependsOn 'graphqlCodegen'
-
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:3.21.7"
-    }
-    clean {
-        delete protobuf.generatedFilesBaseDir
+        artifact = 'com.google.protobuf:protoc'
     }
     plugins {
         grpc {
-            artifact = "io.grpc:protoc-gen-grpc-java:1.53.0"
-        }
-        reactor {
-            artifact = "com.salesforce.servicelibs:reactor-grpc:1.2.3"
+            artifact = 'io.grpc:protoc-gen-grpc-java'
         }
     }
     generateProtoTasks {
         all()*.plugins {
             grpc {}
-            reactor {}
         }
     }
 }
+
 
 tasks.named('test') {
     useJUnitPlatform()

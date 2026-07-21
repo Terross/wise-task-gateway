@@ -9,6 +9,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import ru.leti.graphql.model.*;
 import ru.leti.wise.task.gateway.mapper.GraphMapper;
@@ -24,10 +25,7 @@ import java.util.List;
 @Observed
 @Controller
 @RequiredArgsConstructor
-public class TaskController implements GetTaskQueryResolver, GetAllTasksQueryResolver, GetTaskSolutionQueryResolver,
-        GetAllTaskSolutionsQueryResolver, GetUserSolutionStatisticQueryResolver, DeleteTaskMutationResolver,
-        CreateTaskGraphMutationResolver, CreateTaskImplementationMutationResolver, UpdateTaskGraphMutationResolver,
-        UpdateTaskImplementationMutationResolver, SolveTaskGraphMutationResolver, SolveTaskImplementationMutationResolver {
+public class TaskController {
 
     private final TaskMapper taskMapper;
     private final SolutionMapper solutionMapper;
@@ -36,7 +34,7 @@ public class TaskController implements GetTaskQueryResolver, GetAllTasksQueryRes
     private final GraphGrpcService graphGrpcService;
     private final GraphMapper graphMapper;
 
-    @Override
+
     @MutationMapping
     @PreAuthorize(
             "hasRole(\"AUTHOR\") and " +
@@ -47,7 +45,7 @@ public class TaskController implements GetTaskQueryResolver, GetAllTasksQueryRes
         return id;
     }
 
-    @Override
+
     @QueryMapping
     @PreAuthorize(value = "hasRole(\"AUTHOR\") and " +
             "@taskGrpcService.getTask(#taskId).getAuthorId().equals(authentication.principal.profile.id) or" +
@@ -56,14 +54,13 @@ public class TaskController implements GetTaskQueryResolver, GetAllTasksQueryRes
         return solutionMapper.toSolutions(taskGrpcService.getAllTaskSolutions(taskId, userId));
     }
 
-    @Override
     @QueryMapping
     @PreAuthorize("hasAnyRole(\"USER\", \"AUTHOR\",\"ADMIN\")")
     public List<Task> getAllTasks() {
         return taskMapper.toTasks(taskGrpcService.getAllTasks());
     }
 
-    @Override
+
     @QueryMapping
     @PreAuthorize("hasAnyRole(\"USER\", \"AUTHOR\",\"ADMIN\")")
     public Task getTask(@Argument String id) {
@@ -76,7 +73,6 @@ public class TaskController implements GetTaskQueryResolver, GetAllTasksQueryRes
         return taskMapper.toTaskImplementation(taskResponse);
     }
 
-    @Override
     @QueryMapping
     @PreAuthorize(value = "hasRole(\"USER\") and " +
             "@taskGrpcService.getTaskSolution(#id).getAuthorId().equals(authentication.principal.id)" +
@@ -92,56 +88,54 @@ public class TaskController implements GetTaskQueryResolver, GetAllTasksQueryRes
         return solutionMapper.toSolution(solution);
     }
 
-    @Override
+
     @QueryMapping
     @PreAuthorize("hasAnyRole(\"AUTHOR\",\"ADMIN\")")
     public List<Solution> getUserSolutionStatistic(@Argument String userId) {
         return solutionMapper.toSolutions(taskGrpcService.getUserSolutionStatistic(userId));
     }
 
-    @Override
+
     @MutationMapping
     @PreAuthorize("hasAnyRole(\"AUTHOR\",\"ADMIN\")")
     public TaskGraph createTaskGraph(@Argument TaskGraphInput task) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String userId = ((UserCredentials) auth.getPrincipal()).getId();
+        String userId = ((User) auth.getPrincipal()).getUsername();
         return taskMapper.toTaskGraph(taskGrpcService.createTask(taskMapper.toTaskGraph(task, userId)));
     }
 
-    @Override
+
     @MutationMapping
     @PreAuthorize("hasAnyRole(\"AUTHOR\",\"ADMIN\")")
     public TaskImplementation createTaskImplementation(@Argument TaskImplementationInput task) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String userId = ((UserCredentials) auth.getPrincipal()).getId();
+        String userId = ((User) auth.getPrincipal()).getUsername();
         return taskMapper.toTaskImplementation(taskGrpcService.createTask(taskMapper.toTaskImplementation(task, userId)));
     }
 
-    @Override
+
     @MutationMapping
     @PreAuthorize("hasRole(\"AUTHOR\") " +
             "and @taskGrpcService.getTask(#task.getId()).getAuthorId().equals(authentication.principal.id) " +
             "or hasRole(\"ADMIN\")")
     public TaskGraph updateTaskGraph(@Argument TaskGraphInput task) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String userId = ((UserCredentials) auth.getPrincipal()).getId();
+        String userId = ((User) auth.getPrincipal()).getUsername();
         return taskMapper.toTaskGraph(
                 taskGrpcService.updateTask(
                         taskMapper.toTaskGraph(task, userId)));
     }
 
-    @Override
     @MutationMapping
     @PreAuthorize("hasRole(\"AUTHOR\") " +
             "and @taskGrpcService.getTask(#task.getId()).getAuthorId().equals(authentication.principal.id) " +
             "or hasRole(\"ADMIN\")")
     public TaskImplementation updateTaskImplementation(@Argument TaskImplementationInput task) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String userId = ((UserCredentials) auth.getPrincipal()).getId();
+        String userId = ((User) auth.getPrincipal()).getUsername();
         return taskMapper.toTaskImplementation(taskGrpcService.updateTask(taskMapper.toTaskImplementation(task, userId)));
     }
 
-    @Override
     @MutationMapping
     @PreAuthorize("hasAnyRole(\"USER\", \"AUTHOR\",\"ADMIN\")")
     public SolutionGraph solveTaskGraph(@Argument SolutionGraphInput solution) {
@@ -150,7 +144,6 @@ public class TaskController implements GetTaskQueryResolver, GetAllTasksQueryRes
         return solutionMapper.toSolutionGraph(taskGrpcService.solveTask(solutionMapper.toSolutionGraph(solution, userId)));
     }
 
-    @Override
     @MutationMapping
     @PreAuthorize("hasAnyRole(\"USER\", \"AUTHOR\",\"ADMIN\")")
     public SolutionImplementation solveTaskImplementation(@Argument SolutionImplementationInput solution) {

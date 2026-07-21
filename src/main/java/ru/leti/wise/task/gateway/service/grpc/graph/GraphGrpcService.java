@@ -5,11 +5,13 @@ import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.leti.graphql.model.GenerateGraphRequest;
-import ru.leti.graphql.model.GraphInput;
+import ru.leti.wise.task.gateway.dto.graph.GenerateGraphRequest;
+import ru.leti.wise.task.gateway.dto.graph.GraphInput;
 import ru.leti.wise.task.gateway.mapper.GraphMapper;
 import ru.leti.wise.task.graph.GraphGrpc;
 import ru.leti.wise.task.graph.GraphOuterClass.Graph;
+import ru.leti.wise.task.graph.GraphServiceGrpc;
+import ru.leti.wise.task.graph.GraphServiceGrpc.GraphServiceBlockingStub;
 
 import java.util.List;
 
@@ -19,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GraphGrpcService {
 
-    private final GraphStubHolder graphStubHolder;
+    private final GraphServiceBlockingStub graphStub;
     private final GraphMapper graphMapper;
 
     public Graph createGraph(GraphInput graph, String userId) {
@@ -34,9 +36,8 @@ public class GraphGrpcService {
                 request.getGraph().getIsNamed(),
                 request.getGraph().getName());
 
-        Graph result = graphStubHolder.get()
-                .createGraph(reactor.core.publisher.Mono.just(request))
-                .block()
+        Graph result = graphStub
+                .createGraph(request)
                 .getGraph();
 
         log.info("Received gRPC response: isNamed={}, name={}",
@@ -47,10 +48,8 @@ public class GraphGrpcService {
 
     public Graph generateGraph(GenerateGraphRequest generateGraphRequest) {
         var request = graphMapper.toGenerateGraphRequest(generateGraphRequest);
-
-        return graphStubHolder.get()
-                .generateRandomGraph(reactor.core.publisher.Mono.just(request))
-                .block()
+        return graphStub
+                .generateRandomGraph(request)
                 .getGraph();
     }
 
@@ -59,16 +58,15 @@ public class GraphGrpcService {
                 .setId(id)
                 .build();
 
-        return graphStubHolder.get()
-                .getGraphById(reactor.core.publisher.Mono.just(request))
-                .block()
+        return graphStub
+                .getGraphById(request)
                 .getGraph();
     }
 
     public List<Graph> getGraphLibrary() {
-        return graphStubHolder.get()
-                .getGraphLibrary(reactor.core.publisher.Mono.just(Empty.newBuilder().build()))
-                .block()
+        Empty request = Empty.getDefaultInstance();
+        return graphStub
+                .getGraphLibrary(request)
                 .getGraphListList();
     }
 
@@ -77,9 +75,8 @@ public class GraphGrpcService {
                 .setId(id)
                 .build();
 
-        return graphStubHolder.get()
-                .removeGraph(reactor.core.publisher.Mono.just(request))
-                .block()
+        return graphStub
+                .removeGraph(request)
                 .getId();
     }
 
@@ -89,9 +86,8 @@ public class GraphGrpcService {
                 .setUserId(userId)
                 .build();
 
-        return graphStubHolder.get()
-                .isOwnerGraph(reactor.core.publisher.Mono.just(request))
-                .block()
+        return graphStub
+                .isOwnerGraph(request)
                 .getResult();
     }
 }

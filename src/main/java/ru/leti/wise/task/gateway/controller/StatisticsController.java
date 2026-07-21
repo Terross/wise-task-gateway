@@ -18,11 +18,10 @@ import ru.leti.wise.task.gateway.service.grpc.statistic.StatisticsGrpcService;
 @Observed
 @Controller
 @RequiredArgsConstructor
-public class StatisticsController implements GetStatisticQueryResolver {
+public class StatisticsController {
     private final StatisticsGrpcService statisticsGrpcService;
     private final StatisticMapper statisticMapper;
 
-    @Override
     @QueryMapping
     @PreAuthorize("hasAnyRole(\"USER\",\"AUTHOR\",\"ADMIN\")")
     public StatisticResponse getStatistic(@Argument StatisticRequestInput request) throws Exception {
