@@ -1,6 +1,7 @@
 spring:
   application:
     name: wise-task-gateway
+
 grpc:
   service:
     graph:
@@ -23,9 +24,8 @@ server:
 
 security:
   jwt:
-    private-key: classpath:certs/private.pem
-    public-key: classpath:certs/public.pem
-    expiration: ${JWT_EXPIRATION_SEC}
+    public-key: file:src/main/resources/certs/public.pem
+
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS}
     allowed-methods: ${CORS_ALLOWED_METHODS}
@@ -34,23 +34,29 @@ security:
     max-age: ${CORS_MAX_AGE}
 
 logging:
-  pattern:
-    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
   level:
     ru.leti.wise.task.gateway: ${LOGGING_LEVEL}
     org.springframework.security: ${LOGGING_LEVEL}
 
+
 management:
   tracing:
     sampling:
-      probability: 1
+      probability: 1.0
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          endpoint: http://${TEMPO_HOST:localhost}:${TEMPO_PORT:4318}/v1/traces
+  otlp:
+    metrics:
+      export:
+        enabled: false # prometheus will do it
   endpoints:
     web:
       exposure:
         include: health,info,prometheus,metrics
   metrics:
-    enable:
-      process: false
     tags:
       application: ${spring.application.name}
     distribution:
@@ -58,6 +64,3 @@ management:
         http:
           server:
             requests: true
-  zipkin:
-    tracing:
-      endpoint: http://localhost:9411/api/v2/spans

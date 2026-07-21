@@ -259,6 +259,7 @@ services:
       - ./docker/tempo/tempo-data:/tmp/tempo
     ports:
       - "127.0.0.1:3200:3200"
+      - "127.0.0.1:4318:4318" # http otlp
       - "127.0.0.1:9411:9411"  # Zipkin
       - "127.0.0.1:14268:14268" # Jaeger ingest
   loki:

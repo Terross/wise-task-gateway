@@ -2,16 +2,11 @@ package ru.leti.wise.task.gateway.service.grpc.graph;
 
 import io.grpc.ClientInterceptor;
 import io.grpc.ManagedChannelBuilder;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.leti.wise.task.graph.GraphServiceGrpc;
 import ru.leti.wise.task.graph.ReactorGraphServiceGrpc;
-
-import javax.annotation.PostConstruct;
-
-import static io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder.forAddress;
-import static ru.leti.wise.task.graph.GraphServiceGrpc.newBlockingStub;
 
 @Slf4j
 @Component

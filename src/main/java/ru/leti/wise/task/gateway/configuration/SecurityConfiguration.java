@@ -1,41 +1,43 @@
-package ru.leti.wise.task.gateway.security.configuration;
+package ru.leti.wise.task.gateway.configuration;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import ru.leti.wise.task.gateway.security.service.AuthEntryPointJwt;
-import ru.leti.wise.task.gateway.security.service.AuthTokenFilter;
-import ru.leti.wise.task.gateway.security.user.UserCredentialsService;
 
-import static org.springframework.security.config.Customizer.withDefaults;
+import java.security.interfaces.RSAPublicKey;
 
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
-public class WebSecurityConfig {
+public class SecurityConfiguration {
 
-    private final AuthTokenFilter authTokenFilter;
-    private final AuthEntryPointJwt authEntryPointJwt;
-    private final UserCredentialsService userCredentialsService;
+    @Value("${security.jwt.public-key}")
+    private RSAPublicKey publicKey;
     private final CorsProperties corsProperties;
 
     @Bean
-    public CorsConfigurationSource corsConfiguration(){
+    public JwtDecoder jwtDecoder() {
+        return NimbusJwtDecoder.withPublicKey(publicKey).build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfiguration() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(corsProperties.allowedOrigins());
         configuration.setAllowedMethods(corsProperties.allowedMethods());
@@ -50,26 +52,19 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPointJwt))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(request -> request.requestMatchers("/graphql").permitAll()
-                        .anyRequest().authenticated()
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(request ->
+                        request.requestMatchers("/graphql").permitAll()
+                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                                .anyRequest().authenticated()
                 )
-                .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .cors(cors -> cors.configurationSource(corsConfiguration()))
-                .csrf().disable()
+                .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
+                .oauth2ResourceServer(oauth2 ->
+                        oauth2.jwt(Customizer.withDefaults()))
                 .build();
-    }
-
-
-
-    @Bean
-    @SneakyThrows
-    public AuthenticationManager authenticationManager(HttpSecurity security){
-        AuthenticationManagerBuilder builder = security.getSharedObject(AuthenticationManagerBuilder.class);
-        builder.userDetailsService(userCredentialsService);
-        return builder.build();
     }
 
 }

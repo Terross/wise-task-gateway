@@ -1,13 +1,12 @@
 package ru.leti.wise.task.gateway.service.grpc.plugin;
 
 import io.grpc.ClientInterceptor;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.leti.wise.task.plugin.PluginServiceGrpc;
 
-import javax.annotation.PostConstruct;
-
-import static io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder.forAddress;
+import static io.grpc.internal.ManagedChannelImplBuilder.forAddress;
 import static ru.leti.wise.task.plugin.PluginServiceGrpc.newBlockingStub;
 
 @Component
