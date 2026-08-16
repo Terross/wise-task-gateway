@@ -1,11 +1,6 @@
 package ru.leti.wise.task.gateway.mapper;
 
-import org.mapstruct.CollectionMappingStrategy;
-import org.mapstruct.Context;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.NullValueCheckStrategy;
-import ru.leti.graphql.model.*;
+import org.mapstruct.*;
 import ru.leti.wise.task.gateway.dto.graph.*;
 import ru.leti.wise.task.graph.GraphGrpc;
 import ru.leti.wise.task.graph.GraphOuterClass;

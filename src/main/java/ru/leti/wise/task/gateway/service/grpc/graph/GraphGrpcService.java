@@ -10,7 +10,6 @@ import ru.leti.wise.task.gateway.dto.graph.GraphInput;
 import ru.leti.wise.task.gateway.mapper.GraphMapper;
 import ru.leti.wise.task.graph.GraphGrpc;
 import ru.leti.wise.task.graph.GraphOuterClass.Graph;
-import ru.leti.wise.task.graph.GraphServiceGrpc;
 import ru.leti.wise.task.graph.GraphServiceGrpc.GraphServiceBlockingStub;
 
 import java.util.List;
@@ -21,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GraphGrpcService {
 
-    private final GraphServiceBlockingStub graphStub;
+    private final GraphServiceBlockingStub graphService;
     private final GraphMapper graphMapper;
 
     public Graph createGraph(GraphInput graph, String userId) {
@@ -36,7 +35,7 @@ public class GraphGrpcService {
                 request.getGraph().getIsNamed(),
                 request.getGraph().getName());
 
-        Graph result = graphStub
+        Graph result = graphService
                 .createGraph(request)
                 .getGraph();
 
@@ -48,7 +47,7 @@ public class GraphGrpcService {
 
     public Graph generateGraph(GenerateGraphRequest generateGraphRequest) {
         var request = graphMapper.toGenerateGraphRequest(generateGraphRequest);
-        return graphStub
+        return graphService
                 .generateRandomGraph(request)
                 .getGraph();
     }
@@ -58,14 +57,14 @@ public class GraphGrpcService {
                 .setId(id)
                 .build();
 
-        return graphStub
+        return graphService
                 .getGraphById(request)
                 .getGraph();
     }
 
     public List<Graph> getGraphLibrary() {
         Empty request = Empty.getDefaultInstance();
-        return graphStub
+        return graphService
                 .getGraphLibrary(request)
                 .getGraphListList();
     }
@@ -75,7 +74,7 @@ public class GraphGrpcService {
                 .setId(id)
                 .build();
 
-        return graphStub
+        return graphService
                 .removeGraph(request)
                 .getId();
     }
@@ -86,7 +85,7 @@ public class GraphGrpcService {
                 .setUserId(userId)
                 .build();
 
-        return graphStub
+        return graphService
                 .isOwnerGraph(request)
                 .getResult();
     }

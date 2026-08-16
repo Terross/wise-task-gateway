@@ -2,7 +2,6 @@ package ru.leti.wise.task.gateway.controller;
 
 import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -11,11 +10,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
-import ru.leti.graphql.model.*;
+import ru.leti.wise.task.gateway.dto.task.*;
 import ru.leti.wise.task.gateway.mapper.GraphMapper;
 import ru.leti.wise.task.gateway.mapper.SolutionMapper;
 import ru.leti.wise.task.gateway.mapper.TaskMapper;
-import ru.leti.wise.task.gateway.security.user.UserCredentials;
 import ru.leti.wise.task.gateway.service.TaskService;
 import ru.leti.wise.task.gateway.service.grpc.graph.GraphGrpcService;
 import ru.leti.wise.task.gateway.service.grpc.task.TaskGrpcService;
@@ -66,8 +64,8 @@ public class TaskController {
     public Task getTask(@Argument String id) {
         var taskResponse = taskGrpcService.getTask(id);
         var taskGraph = taskMapper.toTaskGraph(taskResponse);
-        if (taskGraph.getGraph().getId() != null) {
-            taskGraph.setGraph(graphMapper.toGraph(graphGrpcService.getGraphById(taskGraph.getGraph().getId())));
+        if (taskGraph.getGraph().id() != null) {
+            taskGraph.setGraph(graphMapper.toGraph(graphGrpcService.getGraphById(taskGraph.getGraph().id())));
             return taskGraph;
         }
         return taskMapper.toTaskImplementation(taskResponse);
@@ -140,7 +138,7 @@ public class TaskController {
     @PreAuthorize("hasAnyRole(\"USER\", \"AUTHOR\",\"ADMIN\")")
     public SolutionGraph solveTaskGraph(@Argument SolutionGraphInput solution) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String userId = ((UserCredentials) auth.getPrincipal()).getId();
+        String userId = ((User) auth.getPrincipal()).getUsername();
         return solutionMapper.toSolutionGraph(taskGrpcService.solveTask(solutionMapper.toSolutionGraph(solution, userId)));
     }
 
@@ -148,7 +146,7 @@ public class TaskController {
     @PreAuthorize("hasAnyRole(\"USER\", \"AUTHOR\",\"ADMIN\")")
     public SolutionImplementation solveTaskImplementation(@Argument SolutionImplementationInput solution) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String userId = ((UserCredentials) auth.getPrincipal()).getId();
+        String userId = ((User) auth.getPrincipal()).getUsername();
         return solutionMapper.toSolutionImplementation(taskGrpcService.solveTask(solutionMapper.toSolutionImplementation(solution, userId)));
     }
 }

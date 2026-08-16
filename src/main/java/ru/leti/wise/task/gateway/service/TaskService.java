@@ -2,8 +2,8 @@ package ru.leti.wise.task.gateway.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.leti.graphql.model.Solution;
-import ru.leti.graphql.model.SolutionGraph;
+import ru.leti.wise.task.gateway.dto.task.Solution;
+import ru.leti.wise.task.gateway.dto.task.SolutionGraph;
 import ru.leti.wise.task.gateway.mapper.GraphMapper;
 import ru.leti.wise.task.gateway.mapper.SolutionMapper;
 import ru.leti.wise.task.gateway.service.grpc.graph.GraphGrpcService;

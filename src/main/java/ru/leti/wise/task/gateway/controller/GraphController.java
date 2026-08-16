@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
-import ru.leti.graphql.model.*;
 import ru.leti.wise.task.gateway.dto.graph.GenerateGraphRequest;
 import ru.leti.wise.task.gateway.dto.graph.Graph;
 import ru.leti.wise.task.gateway.dto.graph.GraphInput;

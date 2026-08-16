@@ -1,6 +1,7 @@
 enum TaskType {
     GRAPH
     IMPLEMENTATION
+    UNRECOGNISED
 }
 
 input RuleInput {

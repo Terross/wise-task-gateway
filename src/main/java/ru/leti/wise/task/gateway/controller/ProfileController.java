@@ -7,12 +7,10 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import ru.leti.graphql.model.*;
+import ru.leti.wise.task.gateway.dto.profile.Profile;
+import ru.leti.wise.task.gateway.dto.profile.ProfileInput;
 import ru.leti.wise.task.gateway.mapper.ProfileMapper;
-import ru.leti.wise.task.gateway.security.service.SecurityService;
 import ru.leti.wise.task.gateway.service.grpc.profile.ProfileGrpcService;
 
 import java.util.List;

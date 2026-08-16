@@ -9,10 +9,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
-import ru.leti.graphql.model.ImplementationResult;
-import ru.leti.graphql.model.Plugin;
-import ru.leti.graphql.model.PluginInput;
-import ru.leti.graphql.model.SolutionInput;
+
+import ru.leti.wise.task.gateway.dto.plugin.ImplementationResult;
+import ru.leti.wise.task.gateway.dto.plugin.Plugin;
+import ru.leti.wise.task.gateway.dto.plugin.PluginInput;
+import ru.leti.wise.task.gateway.dto.plugin.SolutionInput;
 import ru.leti.wise.task.gateway.mapper.PluginMapper;
 import ru.leti.wise.task.gateway.service.grpc.plugin.PluginGrpcService;
 

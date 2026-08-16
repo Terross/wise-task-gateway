@@ -4,13 +4,14 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-import ru.leti.graphql.model.StatisticRequestInput;
-import ru.leti.graphql.model.StatisticResponse;
-import ru.leti.graphql.model.StatisticScope;
-import ru.leti.graphql.model.StatisticType;
 import ru.leti.wise.task.event.Statistic;
 
 import com.google.protobuf.Timestamp;
+import ru.leti.wise.task.gateway.dto.statistic.StatisticRequestInput;
+import ru.leti.wise.task.gateway.dto.statistic.StatisticResponse;
+import ru.leti.wise.task.gateway.dto.statistic.StatisticScope;
+import ru.leti.wise.task.gateway.dto.statistic.StatisticType;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -26,8 +27,8 @@ public interface StatisticMapper {
     @Mapping(target = "eventType", source = "event_type")
     @Mapping(target = "userId", source = "user_id")
     @Mapping(target = "taskId", source = "task_id")
-    @Mapping(target = "type", expression = "java(mapType(request.getType()))")
-    @Mapping(target = "scope", expression = "java(mapScope(request.getScope()))")
+    @Mapping(target = "type", expression = "java(mapType(request.type()))")
+    @Mapping(target = "scope", expression = "java(mapScope(request.scope()))")
     Statistic.StatisticRequest toStatistic(StatisticRequestInput request);
 
     @Mapping(target = "scope", expression = "java(mapScope(response.getScope()))")
