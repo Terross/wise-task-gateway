@@ -18,9 +18,7 @@ public class TaskService {
     private final SolutionMapper solutionMapper;
 
     public Solution buildSolutionWithGraph(TaskOuterClass.Solution solution) {
-        var response = (SolutionGraph) solutionMapper.toSolution(solution);
-        var graph = graphGrpcService.getGraphById(solution.getSolutionGraph().getGraph().getId());
-        response.setGraph(graphMapper.toGraph(graph));
-        return response;
+//        graphGrpcService.getGraphById(solution.getSolutionGraph().getGraph().getId());
+        return solutionMapper.toSolution(solution);
     }
 }

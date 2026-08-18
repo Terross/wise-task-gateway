@@ -64,10 +64,10 @@ public class TaskController {
     public Task getTask(@Argument String id) {
         var taskResponse = taskGrpcService.getTask(id);
         var taskGraph = taskMapper.toTaskGraph(taskResponse);
-        if (taskGraph.getGraph().id() != null) {
-            taskGraph.setGraph(graphMapper.toGraph(graphGrpcService.getGraphById(taskGraph.getGraph().id())));
-            return taskGraph;
-        }
+//        if (taskGraph.graph().id() != null) {
+//            taskGraph.setGraph(graphMapper.toGraph(graphGrpcService.getGraphById(taskGraph.graph().id())));
+//            return taskGraph;
+//        } // TODO test it
         return taskMapper.toTaskImplementation(taskResponse);
     }
 
@@ -80,9 +80,9 @@ public class TaskController {
             " hasRole(\"ADMIN\")")
     public Solution getTaskSolution(@Argument String id) {
         var solution = taskGrpcService.getTaskSolution(id);
-        if (solution.hasSolutionGraph()) {
-            return taskService.buildSolutionWithGraph(solution);
-        }
+//        if (solution.hasSolutionGraph()) {
+//            return taskService.buildSolutionWithGraph(solution); //TODO test it
+//        }
         return solutionMapper.toSolution(solution);
     }
 

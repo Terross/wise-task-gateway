@@ -1,10 +1,13 @@
 package ru.leti.wise.task.gateway.dto.task;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Setter
-@Getter
-public class TaskImplementation extends Task{
-    String pluginId;
+public record TaskImplementation(
+        String id,
+        String name,
+        String description,
+        String category,
+        TaskType taskType,
+        String authorId,
+        boolean isPublic,
+        String pluginId
+) implements Task {
 }
