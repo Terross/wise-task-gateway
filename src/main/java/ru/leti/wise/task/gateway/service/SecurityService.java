@@ -13,6 +13,7 @@ import ru.leti.wise.task.gateway.dto.profile.SignUpRequest;
 import ru.leti.wise.task.gateway.dto.profile.Token;
 import ru.leti.wise.task.gateway.mapper.ProfileMapper;
 import ru.leti.wise.task.gateway.service.grpc.profile.ProfileGrpcService;
+import ru.leti.wise.task.profile.ProfileOuterClass;
 
 import java.time.Instant;
 
@@ -27,47 +28,43 @@ public class SecurityService {
 
     public Token signIn(SignInRequest request) {
         var profile = profileGrpcService.signIn(request.email(), request.password());
-        var userDetails = new UserCredentials(profileMapper.toProfile(profile));
         return new Token(
-                generateAccessToken(userDetails),
-                generateRefreshToken(userDetails)
+                generateAccessToken(profile),
+                generateRefreshToken(profile)
         );
     }
 
     public Token signUp(SignUpRequest request) {
         var profile = profileGrpcService.signUp(profileMapper.toProfile(request.profile()));
-        UserCredentials userDetails = new UserCredentials(profileMapper.toProfile(profile));
         return new Token(
-                generateAccessToken(userDetails),
-                generateRefreshToken(userDetails)
+                generateAccessToken(profile),
+                generateRefreshToken(profile)
         );
     }
 
     public Token resetPassword(ResetPasswordRequest request){
         var profile = profileGrpcService.resetPassword(request.recoveryToken(), request.newPassword());
-        UserCredentials userDetails = new UserCredentials(profileMapper.toProfile(profile));
         return new Token(
-                generateAccessToken(userDetails),
-                generateRefreshToken(userDetails)
+                generateAccessToken(profile),
+                generateRefreshToken(profile)
         );
     }
 
-    private String generateAccessToken(UserCredentials user) {
+    private String generateAccessToken(ProfileOuterClass.Profile user) {
         Instant now = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("wise-task")
                 .subject(user.getId())
                 .issuedAt(now)
                 .expiresAt(now.plus(jwtProperties.accessExpiresAt()))
-                .claim("username", user.getUsername())
-                .claim("role", user.getRole())
+                .claim("role", user.getProfileRole())
                 .claim("email", user.getEmail())
                 .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
-    private String generateRefreshToken(UserCredentials user) {
+    private String generateRefreshToken(ProfileOuterClass.Profile user) {
         Instant now = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("wise-task")
