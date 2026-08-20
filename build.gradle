@@ -42,7 +42,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-opentelemetry'
     implementation 'io.micrometer:micrometer-registry-prometheus'
-    implementation 'com.github.loki4j:loki-logback-appender:2.0.3'
+    implementation 'com.github.loki4j:loki-logback-appender:2.1.0'
 
     // Mapping
     implementation 'org.mapstruct:mapstruct:1.6.3'
