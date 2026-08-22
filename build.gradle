@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'ru.leti'
-version = '1.0.0'
+version = '2.0.0'
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(25)
@@ -27,16 +27,10 @@ dependencies {
     // security
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 
-
     // API
     implementation 'org.springframework.boot:spring-boot-starter-graphql'
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-grpc-client'
-    implementation 'io.grpc:grpc-services'
-
-
-    // Database
-    implementation 'org.postgresql:postgresql:42.7.12'
 
     // Observability (tracing, metrics, logs)
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -51,9 +45,6 @@ dependencies {
     // Lombok
     compileOnly 'org.projectlombok:lombok:1.18.46'
     annotationProcessor 'org.projectlombok:lombok:1.18.46'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.graphql:spring-graphql-test'
 }
 
 protobuf {
