@@ -2,9 +2,7 @@ package ru.leti.wise.task.gateway.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValueCheckStrategy;
-import ru.leti.wise.task.gateway.dto.profile.Profile;
-import ru.leti.wise.task.gateway.dto.profile.ProfileInput;
-import ru.leti.wise.task.gateway.dto.profile.Role;
+import ru.leti.graphql.types.*;
 import ru.leti.wise.task.profile.ProfileOuterClass;
 
 import java.util.List;

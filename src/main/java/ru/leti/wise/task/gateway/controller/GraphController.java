@@ -9,9 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
-import ru.leti.wise.task.gateway.dto.graph.GenerateGraphRequest;
-import ru.leti.wise.task.gateway.dto.graph.Graph;
-import ru.leti.wise.task.gateway.dto.graph.GraphInput;
+import ru.leti.graphql.types.*;
 import ru.leti.wise.task.gateway.mapper.GraphMapper;
 import ru.leti.wise.task.gateway.service.grpc.graph.GraphGrpcService;
 

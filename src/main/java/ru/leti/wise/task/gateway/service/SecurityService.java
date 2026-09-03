@@ -6,11 +6,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import ru.leti.wise.task.gateway.configuration.JwtProperties;
-import ru.leti.wise.task.gateway.dto.UserCredentials;
-import ru.leti.wise.task.gateway.dto.profile.ResetPasswordRequest;
-import ru.leti.wise.task.gateway.dto.profile.SignInRequest;
-import ru.leti.wise.task.gateway.dto.profile.SignUpRequest;
-import ru.leti.wise.task.gateway.dto.profile.Token;
+import ru.leti.graphql.types.*;
 import ru.leti.wise.task.gateway.mapper.ProfileMapper;
 import ru.leti.wise.task.gateway.service.grpc.profile.ProfileGrpcService;
 import ru.leti.wise.task.profile.ProfileOuterClass;
@@ -27,7 +23,7 @@ public class SecurityService {
     private final JwtProperties jwtProperties;
 
     public Token signIn(SignInRequest request) {
-        var profile = profileGrpcService.signIn(request.email(), request.password());
+        var profile = profileGrpcService.signIn(request.getEmail(), request.getPassword());
         return new Token(
                 generateAccessToken(profile),
                 generateRefreshToken(profile)
@@ -35,7 +31,7 @@ public class SecurityService {
     }
 
     public Token signUp(SignUpRequest request) {
-        var profile = profileGrpcService.signUp(profileMapper.toProfile(request.profile()));
+        var profile = profileGrpcService.signUp(profileMapper.toProfile(request.getProfile()));
         return new Token(
                 generateAccessToken(profile),
                 generateRefreshToken(profile)
@@ -43,7 +39,7 @@ public class SecurityService {
     }
 
     public Token resetPassword(ResetPasswordRequest request){
-        var profile = profileGrpcService.resetPassword(request.recoveryToken(), request.newPassword());
+        var profile = profileGrpcService.resetPassword(request.getRecoveryToken(), request.getNewPassword());
         return new Token(
                 generateAccessToken(profile),
                 generateRefreshToken(profile)

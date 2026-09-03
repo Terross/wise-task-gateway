@@ -7,10 +7,7 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import ru.leti.wise.task.gateway.dto.profile.ResetPasswordRequest;
-import ru.leti.wise.task.gateway.dto.profile.SignInRequest;
-import ru.leti.wise.task.gateway.dto.profile.SignUpRequest;
-import ru.leti.wise.task.gateway.dto.profile.Token;
+import ru.leti.graphql.types.*;
 import ru.leti.wise.task.gateway.service.SecurityService;
 import ru.leti.wise.task.gateway.service.grpc.profile.ProfileGrpcService;
 

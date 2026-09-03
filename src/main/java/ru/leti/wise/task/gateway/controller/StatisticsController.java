@@ -7,8 +7,7 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import ru.leti.wise.task.gateway.dto.statistic.StatisticRequestInput;
-import ru.leti.wise.task.gateway.dto.statistic.StatisticResponse;
+import ru.leti.graphql.types.*;
 import ru.leti.wise.task.gateway.mapper.StatisticMapper;
 import ru.leti.wise.task.gateway.service.grpc.statistic.StatisticsGrpcService;
 

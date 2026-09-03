@@ -6,7 +6,8 @@ import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.leti.wise.task.gateway.dto.profile.Profile;
+import ru.leti.graphql.types.*;
+
 
 import java.util.Collection;
 import java.util.List;
@@ -22,9 +23,9 @@ public class UserCredentials implements UserDetails {
     private String role;
 
     public UserCredentials(Profile profile) {
-        this.id = profile.id();
-        this.email = profile.email();
-        this.role = profile.profileRole().name();
+        this.id = profile.getId();
+        this.email = profile.getEmail();
+        this.role = profile.getProfileRole().name();
     }
 
     @Override

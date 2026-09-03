@@ -1,8 +1,9 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version "4.1.0"
+    id 'org.springframework.boot' version "4.1.1"
     id 'io.spring.dependency-management' version "1.1.7"
     id "com.google.protobuf" version "0.10.0"
+    id 'com.netflix.dgs.codegen' version '8.6.0'
 }
 
 group = 'ru.leti'
@@ -21,6 +22,7 @@ configurations {
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
@@ -63,6 +65,19 @@ protobuf {
     }
 }
 
+sourceSets {
+    main {
+        proto {
+            srcDir 'src/main/resources/proto'
+        }
+    }
+}
+
+generateJava {
+    schemaPaths = ["${projectDir}/src/main/resources/graphql"]
+    packageName = 'ru.leti.graphql'
+    generateClient = true
+}
 
 tasks.named('test') {
     useJUnitPlatform()
