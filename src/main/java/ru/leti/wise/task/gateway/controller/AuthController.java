@@ -51,6 +51,4 @@ public class AuthController {
         profileGrpcService.changePassword(id, oldPassword, newPassword);
         return id;
     }
-
-
 }
